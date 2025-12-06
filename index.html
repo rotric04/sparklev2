@@ -328,8 +328,12 @@ function renderPhases(){
 }
 function selectPhase(idx){
   const p = CONFIG.phases[idx];
-  const seatsText = p.capacity === -1 ? 'Remaining seats' : (p.capacity === 0 ? 'Full' : `only ${p.capacity} seats`);
-  selectedInfo.textContent = `${p.label}: ₹${p.amount} and ${seatsText}`;
+  if (idx === 0 && p.label === 'Phase 1') {
+    selectedInfo.textContent = `Early Bird Phase 1: ₹${p.amount} for the first ${p.capacity} only!`;
+  } else {
+    const seatsText = p.capacity === -1 ? 'Remaining seats' : (p.capacity === 0 ? 'Full' : `only ${p.capacity} seats`);
+    selectedInfo.textContent = `${p.label}: ₹${p.amount} and ${seatsText}`;
+  }
 }
 
 /* --------- Render QR --------- */
@@ -512,3 +516,4 @@ Security tips:
 
 </body>
 </html>
+
