@@ -282,7 +282,8 @@ function renderPhases(){
 }
 function selectPhase(idx){
   const p = CONFIG.phases[idx];
-  selectedInfo.textContent = `Selected: ${p.label} — ₹${p.amount} — ${p.capacity===-1?'Remaining seats':(p.capacity===0?'Full':p.capacity+' seats')}`;
+  const seatsText = p.capacity === -1 ? 'Remaining seats' : (p.capacity === 0 ? 'Full' : `only ${p.capacity} seats`);
+  selectedInfo.textContent = `${p.label}: ₹${p.amount} and ${seatsText}`;
 }
 
 /* --------- Render QR --------- */
@@ -465,4 +466,5 @@ Security tips:
 
 </body>
 </html>
+
 
