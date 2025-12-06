@@ -115,12 +115,59 @@ header{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
 /* about & contact */
 .split{display:grid;grid-template-columns:1fr 320px;gap:18px;margin-top:18px}
 .about{padding:14px;border-radius:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02)}
+.about p {
+  text-align: justify;
+  text-justify: inter-word;
+}
 .org-card{padding:14px;border-radius:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02)}
 .socials{display:flex;flex-direction:column;gap:8px;margin-top:8px}
 .socials a{color:var(--muted)}
 
 /* micro interactions */
 .phase:hover,.btn:hover{box-shadow:0 18px 46px rgba(40,30,100,0.07);transform:translateY(-3px)}
+
+/* Enhanced Guidelines Section */
+.guidelines {
+  margin-top: 24px;
+  padding: 20px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(155,107,255,0.2);
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(155,107,255,0.08);
+}
+
+.guidelines strong:first-child {
+  display: block;
+  color: #fff;
+  font-size: 16px;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+
+.guidelines ul {
+  margin: 12px 0 0 20px;
+  padding: 0;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.guidelines li {
+  margin-bottom: 8px;
+}
+
+.guidelines li strong {
+  color: #fff;
+}
+
+/* Highlight the Google Form submit button */
+.btn.copy:last-of-type {
+  background: linear-gradient(90deg,var(--accentB),var(--accentA));color:#07101a;box-shadow:0 14px 36px rgba(80,100,220,0.09)
+}
+
+.btn.copy:last-of-type:hover {
+  box-shadow: 0 12px 32px rgba(255, 107, 107, 0.693);
+  transform: translateY(-4px);
+}
 
 /* responsive */
 @media(max-width:920px){.split{grid-template-columns:1fr}.qr-img{width:260px;height:260px}.logo-stage{width:320px;height:200px}}
@@ -190,21 +237,20 @@ header{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
       <div class="actions">
         <button id="payBtn" class="btn pay" type="button">Pay via UPI App</button>
         <button id="copyBtn" class="btn copy" type="button">Copy UPI Link</button>
-        <button id="paidBtn" class="btn copy" type="button">Fill Google Form</button>
+        <button id="paidBtn" class="btn copy" type="button">Google Form</button>
       </div>
 
       <div class="guidelines">
-        <strong>Guidelines</strong>
-        <ul style="margin:8px 0 0 18px;padding:0;color:var(--muted)">
+        <strong>⚠️ Important Guidelines</strong>
+        <ul>
           <li>Phase 1 is open for payment. Phase 2 and 3 will be open soon.</li>
-          <li>Verify the amount before paying and keep the transaction screenshot.</li>
-          <li>Submit screenshot & UPI transaction ID via Google Form(Mandatory).</li>
-          <li>Note: No refunds will be given after the payment is made.</li>
+          <li>Verify the amount before paying and <b>keep the transaction screenshot.</b></li>
+          <li style="color:#ffd93d"><strong style="color:#ffd93d">📋 Submit screenshot & UPI transaction ID via Google Form (required).</strong></li>
+          <li style="color:#ff6b6b"><strong>⚠️ Note: No refunds will be given after the payment is made.</strong></li>
           <li>If you have any questions, please contact us at the contact details below.</li>
-          <li>Thank you for your support and follow us on Instagram for updates.</li>
+          <li>Thank you for your support and follow us on Instagram for updates! 🎉</li>
         </ul>
       </div>
-    </div>
 
     <div class="split">
       <div class="about">
@@ -466,5 +512,3 @@ Security tips:
 
 </body>
 </html>
-
-
