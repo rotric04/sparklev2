@@ -135,7 +135,7 @@ header{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
 .actions{display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;justify-content:center}
 .btn{padding:12px 16px;border-radius:12px;border:none;cursor:pointer;font-weight:800;transition:transform .12s cubic-bezier(.2,.9,.2,1), box-shadow .12s}
 .btn.primary{background:linear-gradient(90deg,var(--accentB),var(--accentA));color:#07101a;box-shadow:0 14px 36px rgba(80,100,220,0.09)}
-.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+.btn.ghost{background:linear-gradient(90deg,var(--accentB),var(--accentA));color:#07101a;box-shadow:0 14px 36px rgba(80,100,220,0.09)}
 .btn.ghost[disabled]{opacity:0.46;cursor:not-allowed;}
 
 /* About and contact — ensure justified text */
@@ -355,7 +355,7 @@ header{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
 ============================================================================== */
 const CONFIG = {
   phases: [
-    { key:'phase1', label:'Phase 1', amount:200, capacity: 553},
+    { key:'phase1', label:'Phase 1', amount:200, capacity: 546},
     { key:'phase2', label:'Phase 2', amount:250, capacity:400 },
     { key:'phase3', label:'Phase 3', amount:300, capacity:-1 }
   ],
@@ -663,6 +663,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
 
 
