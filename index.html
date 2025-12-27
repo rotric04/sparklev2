@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>Sparkle 3.0</title>
+<title>SPARKLE 3.0</title>
 <meta name="color-scheme" content="dark">
 <meta name="description" content="Sparkle 3.0 — Freshers' Party payment portal. Download QR and submit proof via Google Form.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -493,6 +493,18 @@ input{
   0%{transform:scale(1)}
   50%{transform:scale(1.12)}
   100%{transform:scale(1)}
+}
+
+#mpResult{
+  display:none;
+  visibility:hidden;
+  opacity:0;
+  transition:.25s ease;
+}
+
+#mpResult .spark-card{
+  width:100%;
+  box-sizing:border-box;
 }
 
 </style>
@@ -1136,13 +1148,21 @@ function calcMemory(){
     "this evening may become a gentle memory that you look back on with quiet nostalgia.";
 
   const supporting =
-    "Students with similar profiles often describe this evening as one of their most meaningful social experiences. This is data-feeling — not data-fake.";
+    "Students with similar profiles often describe this evening as one of their most meaningful social experiences.";
 
   const box = document.getElementById('mpResult');
-  box.style.display = "block";
 
+  // ⭐ ALWAYS FORCE SHOW
+  box.style.display = "block";
+  box.style.visibility = "visible";
+  box.style.opacity = "1";
+
+  // ⭐ ENSURE HEIGHT EXPANDS
+  box.style.maxHeight = "none";
+
+  // ⭐ WRITE CONTENT
   box.innerHTML = `
-    <div class="spark-card spark-fade">
+    <div class="spark-card">
 
       <div style="font-size:20px;font-weight:800">
         S.P.A.R.K. Memory Index™: <span id="scoreNum">${score}%</span>
@@ -1166,7 +1186,11 @@ function calcMemory(){
 
     </div>
   `;
+
+  // ⭐ MOST IMPORTANT FOR MOBILE
+  box.scrollIntoView({ behavior:"smooth", block:"center" });
 }
+
 
 </script>
 <!-- SPARK COMPANION — ASTRA -->
