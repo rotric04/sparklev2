@@ -687,7 +687,8 @@ input{
       <option>Last Phase</option>
     </select>
 
-    <button class="btn primary" type="button" onclick="calcMemory()">Generate Index</button>
+    <button id="generateIndexBtn" class="btn primary" type="button">Generate Index</button>
+
 
   </div>
 
@@ -1191,6 +1192,19 @@ function calcMemory(){
   box.scrollIntoView({ behavior:"smooth", block:"center" });
 }
 
+document.addEventListener("DOMContentLoaded", function(){
+
+  const genBtn = document.getElementById("generateIndexBtn");
+
+  if(genBtn){
+    genBtn.addEventListener("click", function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      calcMemory();
+    });
+  }
+
+});
 
 </script>
 <!-- SPARK COMPANION — ASTRA -->
