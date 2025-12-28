@@ -3,1745 +3,522 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>SPARKLE 3.0</title>
+<title>Sparkle 3.0</title>
 <meta name="color-scheme" content="dark">
-<meta name="description" content="Sparkle 3.0 — Freshers' Party payment portal. Download QR and submit proof via Google Form.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@500;700&display=swap" rel="stylesheet">
-
-<meta name="theme-color" content="#0b0a14">
-<meta property="og:title" content="Sparkle 3.0 — Fresher × Farewell Celebration">
-<meta property="og:type" content="website">
-<meta property="og:description" content="Welcome new beginnings. Celebrate golden endings. Secure your entry & explore the Sparkle 3.0 experience.">
-<meta property="og:image" content="/assets/logo.png">
-
+<meta name="description" content="Sparkle 3.0 — Freshers × Farewell party. Countdown until Phase 1 registration opens. Play the mini-game and share your score.">
 <style>
   :root{
     --max:980px;
-    --radius:16px;
+    --radius:14px;
     --muted: rgba(255,255,255,0.78);
-    --panel-bg: rgba(8,6,14,0.62);
-    --accentA: #9b6bff;
-    --accentB: #6da6ff;
-    --accentC: #7ef0f0;
-    --glass: rgba(255,255,255,0.03);
-    --focus: rgba(155,107,255,0.14);
+    --accentA:#9b6bff;
+    --accentB:#6da6ff;
+    --bg:#06040a;
+    --panel-bg: rgba(8,6,14,0.66);
+    --soft: cubic-bezier(.2,.9,.2,1);
+    --envelope-inner-start: #fff7ec;
+    --envelope-inner-end: #fff0f6;
+    --ribbon-dark: #7b4cff;
+    --ribbon-light: #8fd1ff;
   }
-/* Base */
-*{box-sizing:border-box}
-html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;color:#fff;background:#06040a;-webkit-font-smoothing:antialiased}
-a{color:inherit;text-decoration:none}button{font:inherit}
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;color:#fff;background:var(--bg);-webkit-font-smoothing:antialiased}
+  *{box-sizing:border-box}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;cursor:pointer;border:0}
 
-/* Background */
-.theme-bg{position:fixed;inset:0;background-image:url('/assets/theme.png');background-size:cover;background-position:center center;z-index:0;will-change:transform;transition:transform 300ms linear;filter:contrast(.96) saturate(1.05)}
-.bg-overlay{position:fixed;inset:0;background:linear-gradient(180deg, rgba(3,2,8,0.65), rgba(6,4,10,0.78));backdrop-filter: blur(6px);z-index:1;pointer-events:none}
+  /* background */
+  .theme-bg{position:fixed;inset:0;background-image:linear-gradient(180deg,#050017,#070014);z-index:0}
+  .bg-accent{position:fixed;inset:-20% -20% -20% -20%;background:linear-gradient(120deg, rgba(155,107,255,0.10), rgba(109,166,255,0.10));filter:blur(68px);z-index:0;pointer-events:none}
 
-/* Layout */
-.wrap{position:relative;z-index:2;max-width:var(--max);margin:36px auto;padding:20px}
-.subtitle{color:var(--muted);font-size:clamp(12px,1.6vw,14px);margin-top:-6px}
+  /* container */
+  .wrap{position:relative;z-index:2;max-width:var(--max);margin:36px auto;padding:20px;min-height:100vh;display:flex;align-items:center;justify-content:center}
+  .panel{width:100%;background:var(--panel-bg);border-radius:var(--radius);padding:22px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 30px 80px rgba(0,0,0,0.6);backdrop-filter: blur(6px);opacity:0;transform:translateY(10px) scale(.995);transition:opacity .48s var(--soft), transform .48s var(--soft);display:grid;gap:12px;align-items:center;justify-items:center}
 
-/* -------------------- INTRO (CENTERED) -------------------- */
-/* Full viewport fixed layer that centers headline + motto over canvas */
-#introLayer{
-  position:fixed;
-  inset:0;
-  z-index:60;
-  pointer-events:none;
+  /* intro */
+  #introLayer{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(0,0,0,0.46), rgba(0,0,0,0.64));padding:env(safe-area-inset-top) 12px env(safe-area-inset-bottom);-webkit-tap-highlight-color:transparent}
+  .envelope-popup{width:100%;max-width:720px;border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,0.6);background:linear-gradient(180deg,#0b0610,#0f0816);border:1px solid rgba(255,255,255,0.04);color:#fff;overflow:hidden}
+  .envelope-scroll{overflow:auto;max-height:calc(100vh - 120px);-webkit-overflow-scrolling:touch;padding:18px}
+  .row{display:flex;gap:16px;align-items:center}
+  .envVisual{min-width:86px;width:22%;max-width:140px;border-radius:12px;background:linear-gradient(180deg,var(--envelope-inner-start),var(--envelope-inner-end));box-shadow:inset 0 -10px 24px rgba(0,0,0,0.04),0 18px 40px rgba(30,10,80,0.18);position:relative;perspective:700px;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:10px;overflow:visible;transition:transform .48s var(--soft)}
+  .envFlap{position:absolute;left:6%;top:2%;width:88%;height:50%;background:linear-gradient(180deg,var(--accentA),var(--accentB));border-radius:10px;transform-origin:center top;transition:transform .52s var(--soft);box-shadow:0 8px 20px rgba(80,40,160,0.12)}
+  .envBodyInner{position:relative;padding:8px;border-radius:8px;background:linear-gradient(180deg,var(--envelope-inner-start),var(--envelope-inner-end));color:#07101a;font-weight:700;font-size:16px;z-index:2;text-align:center;box-shadow:inset 0 -6px 18px rgba(0,0,0,0.02)}
+
+  .ribbon-wrap{position:relative;height:0}
+  .ribbon{position:absolute;width:68px;height:140px;border-radius:10px;top:6px;box-shadow:0 18px 40px rgba(0,0,0,0.12);transform-origin:center;display:block}
+  .ribbon.left{left:-38px;transform:rotate(-10deg); background: linear-gradient(180deg,var(--ribbon-dark),var(--ribbon-light));}
+  .ribbon.right{right:-38px;transform:rotate(10deg); background: linear-gradient(180deg,var(--ribbon-light),var(--ribbon-dark));}
+  .ribbon::after{content:'';position:absolute;left:0;top:0;width:100%;height:100%;border-radius:10px;box-shadow:inset -10px 0 18px rgba(0,0,0,0.12);transform:skewX(8deg) translateX(-6px);opacity:0.9}
+
+  .envelope-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:1020;pointer-events:none}
+  .envelope-dot{width:260px;height:160px;transform-style:preserve-3d;transition:transform .42s var(--soft),opacity .36s var(--soft)}
+  .envelope-dot.enter{animation:dropIn 900ms cubic-bezier(.2,.85,.2,1) forwards}
+  @keyframes dropIn{0%{transform:translateY(-520px) rotateX(12deg) scale(.9);opacity:0}60%{transform:translateY(18px) rotateX(6deg) scale(1.02);opacity:1}100%{transform:translateY(0) rotateX(0deg) scale(1);opacity:1}}
+
+  /* full letter */
+  #fullLetter{position:fixed;inset:0;z-index:1100;display:none;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(6,4,10,0.98), rgba(8,6,14,0.98));padding:env(safe-area-inset-top) 12px env(safe-area-inset-bottom);-webkit-overflow-scrolling:touch}
+  .letterCard{width:100%;max-width:920px;background:#f7f7f8;color:#07101a;border-radius:12px;padding:18px;max-height:calc(100vh - 80px);overflow:auto;position:relative;-webkit-overflow-scrolling:touch}
+  .letterClose{position:absolute;right:12px;top:12px;background:transparent;border-radius:8px;padding:6px 8px;font-weight:800;color:#6b4bff;border:1px solid rgba(107,75,255,0.12)}
+  .letterCard h2{margin:0 0 8px 0}
+  .letterCard p{margin:10px 0;line-height:1.6;font-size:15px;color:#2b2f35;text-align:justify}
+
+  /* countdown & actions */
+ /* allow horizontal scroll if items overflow, but prefer single-line layout on small screens */
+.countdown{
   display:flex;
-  flex-direction:column;       /* stack SVG over tagline */
-  align-items:center;
-  justify-content:center;     /* vertical center */
-  gap:18px;
-  padding:24px;
-  background:transparent;
-}
-
-/* canvas covers the intro layer but sits behind visual elements */
-#introCanvas{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  display:block;
-  z-index:59;
-  pointer-events: none;                 /* keep below SVG and tagline */
-}
-
-/* intro-stage holds the SVG headline; center it and constrain size */
-.intro-stage{
-  position:relative;
-  width:min(86vw,1000px);
-  max-width:1100px;
-  height:auto;                /* let SVG determine height */
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  pointer-events:none;
-  z-index:62;                 /* above canvas */
-}
-
-/* SVG headline styling (no structural changes) */
-.logo-svg{width:100%;height:auto;filter:drop-shadow(0 28px 80px rgba(80,40,160,0.28));transform-origin:center}
-#logoSvg { z-index:62; pointer-events:none; display:block; }
-
-/* Make the headline visually larger and stronger than the motto:
-   - Increased SVG text size (see inline SVG attribute change below)
-   - Add slight stroke for contrast on busy backgrounds */
-#headline {
-  paint-order: stroke fill;
-  stroke: rgba(0,0,0,0.18);
-  stroke-width:3px;
-  filter: drop-shadow(0 10px 30px rgba(0,0,0,0.45));
-}
-
-/* Centered motto — reduced size and pure white color (no gradient) */
-.intro-title{
-  font-weight:600;
-  font-size: clamp(14px, 1.4vw, 15px);  /* slightly smaller than before */
-  letter-spacing:0.4px;
-  line-height:1.3;
-  text-align:center;
-  color:#ffffff;                         /* pure white as requested */
-  text-shadow: 0 4px 18px rgba(0,0,0,0.45);
-  transform-origin:center;
-  opacity:0;                       /* revealed by existing showIntroTag() */
-  transform:translateY(6px);
-  transition:opacity .38s ease, transform .38s ease;
-  z-index:63;                      /* keep above canvas */
-  pointer-events:none;
-  max-width: 90%;
-  margin: 0 auto;
-  padding: 0 10px;
-}
-
-/* keep a fallback .intro-tag selector for compatibility with older CSS references */
-.intro-tag{display:none;}
-
-/* -------------------- rest unchanged -------------------- */
-
-/* Main Panel */
-.logo-small{width:92px;height:92px;border-radius:14px;border:2px solid rgba(255,255,255,0.06);background:linear-gradient(90deg,var(--accentA),var(--accentB));display:block;box-shadow:0 12px 40px rgba(0,0,0,0.6)}
-.panel{margin:28px auto;background:var(--panel-bg);border-radius:var(--radius);padding:20px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 30px 80px rgba(0,0,0,0.6);backdrop-filter: blur(6px)}
-.phase{
-  position:relative;
-  padding:10px 14px;
-  border-radius:12px;
-  background:rgba(255,255,255,0.02);
-  color:#fff;
-  border:1px solid rgba(255,255,255,0.08);
-  font-weight:700;
-  cursor:pointer;
-  min-width:110px;
-  text-align:center;
-  transition:.18s ease;
-}
-
-/* active = gradient card */
-.phase.active{
-  background:linear-gradient(135deg,#9b6bff,#6da6ff);
-  color:#07101a;
-  box-shadow:0 16px 40px rgba(110,120,255,.25);
-  transform:translateY(-4px);
-}
-
-/* locked = dark + dim */
-.phase.locked{
-  opacity:.45;
-  cursor:not-allowed;
-  background:rgba(255,255,255,0.03);
-}
-
-/* price text */
-.phase small{
-  display:block;
-  font-size:12px;
-  opacity:.9;
-}
-
-/* subtle hover */
-.phase:hover:not(.locked){
-  transform:translateY(-3px);
-}
-.phase .lock{
-  display:block;
-  font-size:16px;
-  margin-top:4px;
-}
-.phase-row{
-  display:flex;
-  gap:10px;
-  justify-content:center;
-  margin-bottom:8px;
-  flex-wrap:nowrap;      /* force single-row layout */
-  overflow-x:auto;       /* enable scroll if screen too small */
-  -webkit-overflow-scrolling:touch;
-}
-@media(max-width:480px){
-  .phase{
-    min-width:96px;
-    padding:8px 10px;
-  }
-}
-
-
-/* Selected info and seat counter */
-.selected{margin-top:6px;text-align:center;color:var(--muted);font-size:14px}
-.seats{margin-top:6px;text-align:center;color:var(--muted);font-size:13px}
-
-
-/* QR area */
-.qr-area{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:16px}
-.qr-wrap{background:#fff;padding:18px;border-radius:14px;box-shadow:0 12px 36px rgba(2,6,23,0.48)}
-.qr-img{width:320px;height:320px;max-width:92%;object-fit:contain;image-rendering:pixelated;border-radius:12px;display:block}
-.qr-meta{font-size:14px;color:var(--muted)}
-
-/* Actions */
-.actions{display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;justify-content:center}
-.btn{padding:12px 16px;border-radius:12px;border:none;cursor:pointer;font-weight:800;transition:transform .12s cubic-bezier(.2,.9,.2,1), box-shadow .12s}
-.btn.primary{background:linear-gradient(90deg,var(--accentB),var(--accentA));color:#07101a;box-shadow:0 14px 36px rgba(80,100,220,0.09)}
-.btn.ghost{background:linear-gradient(90deg,var(--accentB),var(--accentA));color:#07101a;box-shadow:0 14px 36px rgba(80,100,220,0.09)}
-.btn.ghost[disabled]{opacity:0.46;cursor:not-allowed;}
-
-/* About and contact — ensure justified text */
-.split{display:grid;grid-template-columns:1fr 320px;gap:18px;margin-top:18px}
-.about{padding:14px;border-radius:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02)}
-.about p{color:var(--muted);line-height:1.5;text-align:justify}
-.org-card{padding:14px;border-radius:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02)}
-.socials{display:flex;flex-direction:column;gap:8px;margin-top:8px}
-.socials a{color:var(--muted)}
-
-/* Enhanced Guidelines Section */
-.guidelines {
-  margin-top: 24px;
-  padding: 20px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(155,107,255,0.2);
-  border-radius: 14px;
-  box-shadow: 0 4px 20px rgba(155,107,255,0.08);
-}
-
-.guidelines strong:first-child {
-  display: block;
-  color: #fff;
-  font-size: 16px;
-  margin-bottom: 12px;
-  letter-spacing: 0.5px;
-}
-
-.guidelines ul {
-  margin: 12px 0 0 20px;
-  padding: 0;
-  color: var(--muted);
-  line-height: 1.8;
-}
-
-.guidelines li {
-  margin-bottom: 8px;
-}
-
-.guidelines li strong {
-  color: #fff;
-}
-
-
-/* modal */
-.modal{position:fixed;inset:0;display:none;align-items:flex-start;justify-content:center;background:rgba(0,0,0,0.7);z-index:9999;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.modal.show{display:flex}
-.modal-card{width:92%;max-width:720px;background:#07101a;padding:20px;border-radius:12px;color:#fff;box-shadow:0 30px 80px rgba(0,0,0,0.6);margin:20px 0;max-height:90vh;overflow-y:auto}
-input{
-  font-size:15px;
-}
-
-@media(max-width:600px){
-  .badge-title{font-size:20px}
-}
-@media(max-width:920px){.split{grid-template-columns:1fr}.qr-img{width:260px;height:260px}.intro-title{font-size:clamp(13px,2.4vw,15px)}}
-@media(max-width:480px){.qr-img{width:200px;height:200px}.intro-stage{height:220px}.intro-title{font-size:clamp(12px,3.2vw,14px)}}
-.visually-hidden{position:absolute;left:-9999px}
-
-/* =========================
-   PREMIUM SPARK HEADER
-========================= */
-
-.spark-header{
-  position:sticky;
-  top:0;
-  z-index:80;
-  background:rgba(5,4,12,.70);
-  border-bottom:1px solid rgba(255,255,255,.12);
-  backdrop-filter:blur(14px);
-}
-
-.spark-nav{
-  max-width:980px;
-  margin:0 auto;
-  padding:10px 14px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:14px;
-}
-
-/* BRAND */
-.spark-brand{
-  display:flex;
-  align-items:center;
   gap:12px;
-}
-
-.spark-logo{
-  width:54px;
-  height:54px;
-  border-radius:14px;
-  border:2px solid rgba(255,255,255,.14);
-  background:linear-gradient(90deg,#9b6bff,#6da6ff);
-  box-shadow:0 10px 28px rgba(0,0,0,.55);
-}
-
-.spark-title-wrap{
-  display:flex;
-  flex-direction:column;
-  line-height:1.15;
-}
-
-.spark-title{
-  font-family:Sora,Inter;
-  font-weight:900;
-  letter-spacing:.6px;
-  font-size:19px;
-}
-
-.spark-sub{
-  color:#b9c3ff;
-  font-size:12px;
-  letter-spacing:.4px;
-  opacity:.9;
-}
-
-/* TABS */
-.spark-tabs{
-  display:flex;
-  gap:8px;
-}
-
-.spark-tab{
-  padding:10px 14px;
-  border-radius:12px;
-  border:1px solid rgba(255,255,255,.18);
-  background:rgba(255,255,255,.06);
-  color:#fff;
-  cursor:pointer;
-  font-weight:700;
-  transition:.18s ease;
-}
-
-.spark-tab:hover{
-  background:rgba(255,255,255,.12);
-}
-
-.spark-tab.active{
-  background:linear-gradient(90deg,#6da6ff,#9b6bff);
-  color:#07101a;
-  box-shadow:0 14px 32px rgba(110,120,255,.28);
-  transform:translateY(-2px);
-}
-
-/* CTA BUTTON */
-.spark-cta{
-  padding:10px 16px;
-  border-radius:12px;
-  background:linear-gradient(90deg,#9b6bff,#6da6ff);
-  color:#07101a;
-  font-weight:800;
-  box-shadow:0 18px 38px rgba(0,0,0,.5);
-  border:1px solid rgba(255,255,255,.25);
-}
-
-/* MOBILE */
-@media(max-width:720px){
-
-  .spark-nav{
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:10px;
-  }
-
-  .spark-brand{
-    width:100%;
-    justify-content:center;
-  }
-
-  .spark-tabs{
-    width:100%;
-    justify-content:center;
-  }
-
-  .spark-cta{
-    width:100%;
-    text-align:center;
-  }
-
-  .spark-title{
-    font-size:17px;
-  }
-
-  .spark-sub{
-    font-size:11px;
-  }
-}
-
-.brand{
-  display:flex;
   align-items:center;
-  gap:10px;
+  justify-content:center;
+  flex-wrap:nowrap;           /* keep items on a single row */
+  overflow-x:auto;            /* allow horizontal scroll when necessary */
+  -webkit-overflow-scrolling:touch;
+  padding:6px 8px;
 }
 
-.brand h1{
-  font-size:18px;
-  margin:0;
-  letter-spacing:.4px;
+/* reduce each item size slightly on small screens so more likely to fit on one line */
+@media (max-width:440px){
+  .countdown-item{ min-width:64px; padding:8px 10px; }
+  .countdown-value{ font-size:18px; }
+  .countdown-label{ font-size:10px; }
+}
+  .countdown-item{min-width:84px;padding:10px 12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);box-shadow:0 12px 36px rgba(30,10,80,0.06);text-align:center}
+  .countdown-value{font-size:22px;font-weight:900}
+  .countdown-label{font-size:11px;color:var(--muted);margin-top:6px;font-weight:800}
+  .actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+  .btn{padding:12px 16px;border-radius:12px;border:none;font-weight:900}
+  .btn.primary{background:linear-gradient(90deg,var(--accentB),var(--accentA));color:#07101a}
+  .btn.ghost{background:opaque;border:1px solid rgba(255,255,255,0.06);color:var(--muted);font-weight:800}
+
+  .content-block{padding:12px;border-radius:10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02);color:var(--muted);text-align:justify}
+
+  /* single modal (scrollable, device-friendly) */
+  .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(1,1,2,0.88);z-index:1200;padding:12px}
+  .modal.show{display:flex}
+  .modal-card{
+    width:100%;
+    max-width:920px;
+    background:#07101a;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.04);
+    box-shadow:0 30px 80px rgba(0,0,0,0.6);
+    max-height:calc(100vh - 40px);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+  .modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid rgba(255,255,255,0.04); background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);}
+  .modal-body{
+  /* scrolling */
+  overflow:auto;
+  -webkit-overflow-scrolling: touch; /* enables momentum scrolling on iOS */
+  padding:18px;
+  /* allow the body to flex and be scrollable inside modal-card */
+  flex: 1 1 auto;
+  min-height: 0; /* CRITICAL for flex children to be scrollable on iOS */
+  /* keep some space for header/footer so body content is fully visible */
+  max-height: calc(90vh - 72px); /* adjust 72px if your header+footer height differs */
 }
 
-/* Panels */
-.panel{
-  display:none;
-  animation:fadeInUp .45s ease forwards;
-}
+  .modal-footer{padding:12px 16px;border-top:1px solid rgba(255,255,255,0.04);display:flex;gap:10px;justify-content:flex-end;background:linear-gradient(180deg, transparent, rgba(255,255,255,0.01));}
+  .close{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 10px;border-radius:10px;color:var(--muted);font-weight:700}
 
-.panel.active{
-  display:block;
-}
+  .game-area{position:relative;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));height:320px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .sparkle{position:absolute;width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 35% 30%, #fff 0%, rgba(255,255,255,0.9) 12%, rgba(155,107,255,0.14) 40%, rgba(124,58,237,0.14) 60%);box-shadow:0 8px 18px rgba(140,80,220,0.25);cursor:pointer;touch-action:manipulation;transition:transform .12s ease, opacity .12s ease}
 
-/* Smooth reveal animation */
-@keyframes fadeInUp{
-  0%{opacity:0; transform:translateY(14px)}
-  100%{opacity:1; transform:translateY(0)}
-}
-
-.result-box{
-  margin-top:14px;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:12px;
-  padding:14px;
-}
-/* === Shared Section Polishing === */
-.spark-card{
-  margin-top:14px;
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.14);
-  border-radius:16px;
-  padding:14px 16px;
-  box-shadow:0 28px 60px rgba(0,0,0,.45);
-}
-
-/* Headline consistency */
-.panel h2{
-  margin-top:0;
-  font-family:Sora,Inter;
-  letter-spacing:.3px;
-}
-
-/* Dropdown polish */
-.panel select{
-  width:100%;
-  margin:10px 0 14px;
-  padding:12px 14px;
-  border-radius:12px;
-  border:1px solid rgba(255,255,255,.18);
-  background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-  color:#fff;
-  appearance:none;
-  outline:none;
-  font-weight:500;
-}
-
-.panel select option{
-  background:#0b0a14;
-  color:#fff;
-}
-
-.panel select:hover{
-  border-color:#9b6bff;
-}
-
-.panel select:focus{
-  border-color:#6da6ff;
-  box-shadow:0 0 0 2px rgba(110,150,255,.25);
-}
-
-
-/* Score output meter */
-.spark-meter{
-  margin-top:12px;
-  height:10px;
-  border-radius:8px;
-  background:rgba(255,255,255,.18);
-}
-.spark-meter-fill{
-  height:10px;
-  border-radius:8px;
-  background:linear-gradient(90deg,#6da6ff,#9b6bff);
-}
-
-#scoreNum{
-  display:inline-block;
-  animation:pulse 1.5s infinite;
-}
-
-@keyframes pulse{
-  0%{transform:scale(1)}
-  50%{transform:scale(1.12)}
-  100%{transform:scale(1)}
-}
-
-#mpResult{
-  display:none;
-  visibility:hidden;
-  opacity:0;
-  transition:.25s ease;
-}
-
-#mpResult .spark-card{
-  width:100%;
-  box-sizing:border-box;
-}
-
-#memory{
-  position:relative;
-  z-index:10;
-}
-
-select:disabled{
-  opacity:.45;
-  cursor:not-allowed;
-}
-
+  @media (max-width:720px){ .letterCard{padding:14px} .game-area{height:260px} .modal-card{max-width:calc(100% - 20px);} }
+  @media (max-width:420px){ .envBodyInner{font-size:14px} .envVisual{width:76px} .game-area{height:220px} }
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
 
-<!-- THEME BG -->
-<div id="themeBg" class="theme-bg" aria-hidden="true"></div>
-<div class="bg-overlay" aria-hidden="true"></div>
+<div class="theme-bg" aria-hidden="true"></div>
+<div class="bg-accent" aria-hidden="true"></div>
 
-<!-- INTRO LAYER (centered headline + motto over canvas) -->
-<div id="introLayer">
-  <canvas id="introCanvas" width="1000" height="480" aria-hidden="true"></canvas>
-
-  <div class="intro-stage" aria-hidden="true">
-    <svg id="logoSvg" class="logo-svg" viewBox="0 0 1000 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <defs>
-        <linearGradient id="grad" x1="0" x2="1">
-          <stop offset="0%" stop-color="#ffffff"/>
-          <stop offset="40%" stop-color="#b084ff"/>
-          <stop offset="100%" stop-color="#6da6ff"/>
-        </linearGradient>
-        <linearGradient id="sweep" x1="0" x2="1">
-          <stop offset="0%" stop-color="#fff" stop-opacity="0"/>
-          <stop offset="40%" stop-color="#fff" stop-opacity="0.24"/>
-          <stop offset="70%" stop-color="#fff" stop-opacity="0.06"/>
-          <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
-        </linearGradient>
-      </defs>
-
-      <!-- Increased font-size so headline is clearly larger than motto -->
-      <text id="headline" x="50%" y="60%" text-anchor="middle" font-family="Impact, Arial Black, sans-serif" font-size="120" fill="url(#grad)" font-weight="900" style="letter-spacing:6px">
-        SPARKLE 3.0
-      </text>
-
-      <rect id="sweepRect" x="-520" y="-80" width="420" height="280" fill="url(#sweep)" style="mix-blend-mode:screen;opacity:0.98"></rect>
-    </svg>
-  </div>
-
-  <!-- center-styled motto; id left as introTag for JS compatibility -->
-  <div id="introTag" class="intro-title">Welcoming New Beginnings,<br>Celebrating Golden Endings</div>
-</div>
-
-<!-- APP -->
-<div class="wrap" id="app" aria-hidden="true" style="opacity:0;transform:translateY(12px);display:none">
-
-  <header class="spark-header">
-  <div class="spark-nav">
-
-    <div class="spark-brand">
-      <img class="spark-logo" src="/assets/logo.png" alt="Sparkle 3.0">
-      <div class="spark-title-wrap">
-        <div class="spark-title">Sparkle 3.0</div>
-        <div class="spark-sub">Fresher’s × Farewell Celebration</div>
-      </div>
+<!-- INTRO LAYER -->
+<div id="introLayer" role="dialog" aria-modal="true">
+  <div class="envelope-popup" id="envelopePopup" aria-hidden="false">
+    <div class="ribbon-wrap" style="position:relative">
+      <div class="ribbon left" aria-hidden="true"></div>
+      <div class="ribbon right" aria-hidden="true"></div>
     </div>
 
-    <nav class="spark-tabs">
-      <button class="spark-tab active" onclick="sparkleNav('mainPanel',this)">Payment</button>
-      <button class="spark-tab" onclick="sparkleNav('memory',this)">Memory Probability</button>
-    </nav>
-
-    <a class="spark-cta" target="_blank" href="https://www.instagram.com/sparkle.uvpce">
-      CONTACT US
-    </a>
-
-  </div>
-</header>
-
-  <section id="mainPanel" class="panel active">
-    <h2 id="payHead" class="visually-hidden">Payment</h2>
-
-    <div class="phase-row" id="phases" role="tablist" aria-label="Phases"></div>
-    <div class="selected" id="selectedInfo">Selected: —</div>
-    <div class="seats" id="seatsInfo">Seats left: —</div>
-
-    <div class="qr-area" id="qrArea">
-      <div class="qr-wrap">
-        <img id="qrImg" class="qr-img" src="/assets/qr1.png" alt="Payment QR" loading="lazy">
-      </div>
-      <div class="qr-meta">UPI ID — <strong id="upiId">—</strong></div>
-
-      <div class="actions">
-        <button id="downloadBtn" class="btn primary" type="button">Download QR</button> 
-        <button id="howBtn" class="btn ghost" type="button">How to pay</button>
-        <button id="formBtn" class="btn ghost" type="button">Google Form</button>
-      </div>
-
-      <div class="guidelines">
-        <strong>⚠️ Important Guidelines</strong>
-        <ul>
-              <li><strong>Phase 2 is now officially open for All year students of UVPCE.</strong> Slots are limited and will be allotted strictly on a first-come, first-served basis.</li>
-              <li><strong>Payment is required only once.</strong> Upon successful payment and correct submission of the Google Form, the registration process is complete.</li>
-              <li>Please verify the payable amount before proceeding and retain a clear transaction screenshot</li>
-              <li style="color:#ffd93d"><strong style="color:#ffd93d">📋 Submission of the payment screenshot and UPI transaction ID via the Google Form is mandatory.</strong></li>
-              <li style="color:#ff6b6b"><strong>⚠️ Payments once made are strictly non-refundable under any circumstances.</strong></li>
-              <li><strong>All participants will be treated equally on the event day.</strong> No partiality, preference, or special consideration will be given.</li>
-              <li>For any queries or clarifications, please contact the organising committee.</li>
-              <li>Thank you for your support and follow us on Instagram for updates! 🎉</li>
-        </ul>
-      </div>
-
-      <div class="split">
-        <div class="about">
-          <h3 style="margin:0 0 10px 0">About Sparkle 3.0</h3>
-          <p>
-            Sparkle 3.0 is a fully student-driven celebration created to warmly welcome our newly admitted batch while also offering a heartfelt and graceful farewell to our beloved seniors. Embracing the motto “Welcoming New Beginnings, Celebrating Golden Endings,” the event brings together music, performances, joy and togetherness, making it a special night where new journeys begin and cherished chapters are honored with pride.
-          </p>
+    <div class="envelope-scroll" id="envelopeScroll">
+      <div class="row">
+        <div class="envVisual" id="envVisual" aria-hidden="true">
+          <div class="envFlap" id="envFlap" aria-hidden="true"></div>
+          <div class="envBodyInner">Open me</div>
         </div>
 
-        <aside class="org-card" aria-labelledby="orgHead">
-          <h3 id="orgHead" style="margin:0 0 8px 0">Organiser & Contact</h3>
-          <div style="color:var(--muted);line-height:1.6">
-            <div><strong>Organiser:</strong> Sparkle 3.0 Committee</div>
-            <div><strong>Phone:</strong> <a href="tel:+911234567890">+91 8980667112</a></div>
-            <div><strong>Email:</strong> <a href="mailto:contact@sparkle.example">sparkle.uvpce@gmail.com</a></div>
-
-            <div style="margin-top:8px"><strong>Follow us:</strong></div>
-            <div class="socials">
-              <a href="https://www.instagram.com/sparkle.uvpce" target="_blank" rel="noopener">Instagram • @sparkle3.0</a>
-              <a href="https://maps.app.goo.gl/K7aEVPNHssWAoT9R8" target="_blank" rel="noopener">Venue • Map</a>
-            </div>
+        <div style="flex:1;color:#fff">
+          <h3 style="margin:0 0 6px 0;font-size:18px">You have a message from Sparkle 3.0</h3>
+          <p style="margin:0 0 12px 0;color:var(--muted);font-size:13px;line-height:1.4">Tap <strong>Open Envelope</strong> to read a short, heartfelt note from the committee. Use Skip to continue to the site for now.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button id="openEnvelopeBtn" class="btn primary">Open Envelope</button>
+            <button id="skipEnvelopeBtn" class="btn ghost">Skip for now</button>
           </div>
-        </aside>
+        </div>
       </div>
 
+      <p style="margin-top:14px;color:var(--muted);font-size:13px">Tip: on phones the letter opens full-screen and is scrollable. You can open it later from the site menu if you prefer.</p>
+    </div>
+  </div>
+
+  <!-- envelope transient visual for drop/open -->
+  <div class="envelope-wrap" id="envelopeWrap" aria-hidden="true" style="display:none;">
+    <div class="envelope-dot" id="envelopeDot" aria-hidden="true">
+      <div style="position:absolute;left:0;top:0;width:100%;height:60%;background:linear-gradient(180deg,var(--accentA),var(--accentB));border-radius:10px;"></div>
+    </div>
+  </div>
+
+  <!-- Full letter overlay -->
+  <div id="fullLetter" aria-hidden="true">
+    <div class="letterCard" role="document" aria-label="Sparkle 3.0 Letter">
+      <button id="letterCloseX" class="letterClose" aria-label="Close letter">Close</button>
+      <h2>Letter From Sparkle 3.0 Organizers</h2>
+      <p><strong>Dear UVPCE family,</strong></p>
+      <p>The silence that once held our campus has finally been broken. After two long years of waiting, Sparkle 3.0 has begun its return in full spirit, and Phase-1 registration stands as a clear reflection of that excitement. The response has been overwhelming, reaffirming how strongly this moment has been anticipated by the campus community.</p>
+      <p>Sparkle 3.0 is created entirely by students for students, guided by passion, intent, and a deep understanding of what this celebration truly means to us. Every detail is being shaped with care, ensuring an experience that feels genuine, trusted, and worthy of the memories we are about to create together.</p>
+      <p>With Phase-1 now successfully completed, we are pleased to share that Phase-2 registration will be reopening soon. This next phase offers another opportunity to be part of a night that is already building its legacy. Those who join in Phase-2 will step into an atmosphere charged with anticipation, connection, and shared celebration.</p>
+      <p>If Phase-1 was any indication, this night will be remembered long after it ends. We warmly invite you to stay connected and be ready, because Sparkle 3.0 is moving closer to delivering the experience our campus has been waiting for.</p>
+      <p style="margin-top:12px"><strong>With gratitude and excitement,</strong><br>Sparkle 3.0 Committee</p>
+
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+        <button id="joinWaitlist" class="btn primary">Remind me when registration opens</button>
+        <button id="closeLetter" class="btn ghost">Continue to site</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN PANEL -->
+<div class="wrap">
+  <section id="mainPanel" class="panel" role="main" aria-labelledby="payHead">
+    <header>
+      <h1 id="payHead">Freshers' x Farewell Party</h1>
+      <div class="subtitle" style="color:var(--muted)">Laugh · Enjoy · Vibe</div>
+    </header>
+
+    <div style="text-align:center">
+      <div class="motto-large" aria-hidden="false" style="font-weight:900;font-size:clamp(30px,6.4vw,64px);line-height:0.98;letter-spacing:2px;background:linear-gradient(90deg,var(--accentA),var(--accentB));-webkit-background-clip:text;background-clip:text;color:transparent">SPARKLE 3.0</div>
+      <div class="motto-small" style="font-weight:700;font-size:clamp(13px,2.2vw,16px);color:#fff;margin-top:6px;text-align:center">Welcoming new beginnings · Celebrating golden endings</div>
     </div>
 
+    <div class="countdown" role="status" aria-live="polite" style="margin-top:8px">
+      <div class="countdown-item"><div id="days" class="countdown-value">00</div><div class="countdown-label">DAYS</div></div>
+      <div class="countdown-item"><div id="hours" class="countdown-value">00</div><div class="countdown-label">HOURS</div></div>
+      <div class="countdown-item"><div id="minutes" class="countdown-value">00</div><div class="countdown-label">MINUTES</div></div>
+      <div class="countdown-item"><div id="seconds" class="countdown-value">00</div><div class="countdown-label">SECONDS</div></div>
+    </div>
+
+    <div class="actions" style="margin-top:8px">
+      <button id="regBtn" class="btn primary" disabled> Phase 3: Registrations Coming Soon!</button>
+      <button id="whyBtn" class="btn ghost"> Why Sparkle 3.0? </button>
+      <a href="https://instagram.com/sparkle.uvpce" target="_blank" rel="noopener">
+        <button id="instaBtn" class="btn ghost"> Our Instagram</button></a>
+    </div>
+
+    <div class="split" style="display:grid;grid-template-columns:1fr;gap:16px;width:100%;align-items:start;margin-top:12px">
+      <div class="about content-block">
+        <h3 style="margin:0 0 8px 0;color:#fff">About Sparkle 3.0</h3>
+        <p style="margin:0 0 10px 0">
+          Sparkle 3.0 is a student-led Freshers × Farewell celebration that brings together new beginnings and fond farewells in one energetic evening. We are curating a balanced program of music, dance, theatrical showcases, and surprise moments designed to create unforgettable memories for everyone who attends.
+        </p>
+
+        <h4 style="margin:8px 0 6px 0;color:#fff">What to expect</h4>
+        <p style="margin:0 0 10px 0">
+          Expect a carefully paced lineup: high-energy musical acts, collaborative performances between batches, student-run stalls, and interactive segments that invite the audience to participate. We are arranging stage lighting, sound, and production with professional-grade attention so the performances feel polished and immersive.
+        </p>
+
+        <h4 style="margin:8px 0 6px 0;color:#fff">Why attend</h4>
+        <p style="margin:0 0 10px 0">
+          Sparkle 3.0 is an opportunity to celebrate community. For juniors, it is the first big campus memory to hold. For seniors, it is a chance to be recognised by peers. For everyone, it is a night to meet new people, cheer for friends, and create stories that last. Being there changes the memory from a message to a moment.
+        </p>
+
+        <h4 style="margin:8px 0 6px 0;color:#fff">Tickets and phases</h4>
+        <p style="margin:0 0 10px 0">
+          Phase 2 brings another chance to reserve limited seats at a special price. As registrations move forward, later phases will be available at regular pricing. Securing your spot early ensures better seating and early access to selected experiences.
+
+        <h4 style="margin:8px 0 6px 0;color:#fff">Community and conduct</h4>
+        <p style="margin:0 0 10px 0">
+          Our priority is a safe and respectful environment. Everyone attending is expected to behave respectfully. Harassment or misuse of tickets will result in removal. Organisers reserve the right to verify and revoke tickets in case of misuse.
+        </p>
+
+        <h4 style="margin:8px 0 6px 0;color:#fff">Get involved</h4>
+        <p style="margin:0 0 6px 0">
+          Want to volunteer or perform? Reach out via our Instagram @sparkle.uvpce. Groups are welcome because this is a collaborative student event and we encourage contributions that make the night richer.
+        </p>
+      </div>
+    </div>
+
+    <footer style="margin-top:12px;color:var(--muted);text-align:justify">© Sparkle 3.0 · All times India Standard Time (UTC+05:30)</footer>
   </section>
-<section id="memory" class="panel">
-  <h2>🧠 S.P.A.R.K. Memory Index™</h2>
-
-  <div class="subtitle">
-    <strong>S.P.A.R.K.</strong> stands for
-    <em>“SPARKLE 3.0 Probability & Recall Knowledge Index.”</em>
-    It is a reflective probability model that estimates how strongly Sparkle 3.0 may stay with you emotionally and socially.
-  </div>
-
-  <div class="spark-card">
-
-    <label>Your Current Year</label>
-    <select id="mpYear">
-      <option>1st Year</option>
-      <option>2nd Year</option>
-      <option>3rd Year</option>
-      <option>Final Year</option>
-    </select>
-
-    <label>Group Size Attending With You</label>
-    <select id="mpGroup">
-      <option>Solo</option>
-      <option>2–3 Friends</option>
-      <option>4–6 Friends</option>
-      <option>Large Group (7+)</option>
-    </select>
-
-    <label>How Often You Meet These Friends</label>
-    <select id="mpFreq">
-      <option>Daily</option>
-      <option>Few times a week</option>
-      <option>Rarely</option>
-      <option>Hardly ever</option>
-    </select>
-
-    <label>Your Emotional Investment</label>
-    <select id="mpEmotion">
-      <option>Very High</option>
-      <option>Moderate</option>
-      <option>Unsure</option>
-      <option>Low</option>
-    </select>
-
-    <label>Time Left In Your Degree</label>
-    <select id="mpTime">
-      <option>Just Started</option>
-      <option>Midway</option>
-      <option>Almost There</option>
-      <option>Last Phase</option>
-    </select>
-
-    <button id="generateIndexBtn" class="btn primary" type="button">Generate Index</button>
-
-
-  </div>
-
-  <div id="mpResult" class="result-box" style="display:none"></div>
-
-</section>
-
-  <footer style="margin-top:18px;text-align:center;color:var(--muted)">© Sparkle 3.0 2026</footer>
 </div>
 
-<!-- How to pay modal -->
-<div id="howModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="howTitle">
-  <div class="modal-card" role="document">
-    <h2 id="howTitle" style="margin:0 0 10px 0;font-size:20px">How to pay — step-by-step</h2>
-    <p style="color:var(--muted);margin:0 0 10px 0;font-size:14px">Follow these exact steps for reliable payment and proof submission (Android & iPhone).</p>
+<!-- Single scrollable modal (device-friendly) -->
+<div id="howModal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="modal-card" role="document" aria-labelledby="howTitle">
+    <div class="modal-header">
+      <h2 id="howTitle" style="margin:0;color:#fff">Why Sparkle 3.0?</h2>
+      <div>
+        <button id="closeHow" class="close" aria-label="Close">Close</button>
+      </div>
+    </div>
 
-    <ol style="margin:10px 0 0 0;padding-left:20px;color:var(--muted);line-height:1.6">
-      <li><strong>Download the QR</strong> by tapping <em>Download QR</em>. Save the image to your phone (Photos/Gallery). Do not edit the file.</li>
-      <li style="margin-top:8px"><strong>Open a UPI app</strong> — Google Pay / PhonePe / Paytm / BHIM or bank UPI app.
-        <ul style="margin-top:6px;color:var(--muted)">
-          <li><strong>Android:</strong> Choose "Scan QR" → "Select from gallery" (icon may vary). Pick the saved image.</li>
-          <li><strong>iPhone / iOS:</strong> If app supports choosing from Photos, use that. Otherwise display the QR on another device and scan with the app camera.</li>
-        </ul>
-      </li>
-      <li style="margin-top:8px"><strong>Confirm pay details</strong>
-        <div style="color:var(--muted);margin-top:6px">
-          Confirm payee name / UPI ID and the <em>exact amount</em> for the selected phase before confirming the transaction.
-        </div>
-      </li>
-      <li style="margin-top:8px"><strong>Capture proof</strong>
-        <div style="color:var(--muted);margin-top:6px">
-          After payment, take a clear screenshot showing UPI ID, amount, transaction ID and timestamp. This screenshot is mandatory for verification.
-        </div>
-      </li>
-      <li style="margin-top:8px"><strong>Submit proof</strong>
-        <div style="color:var(--muted);margin-top:6px">
-          Return to this page and click <em>Google Form</em>. Upload the screenshot and enter the transaction ID exactly.
-        </div>
-      </li>
-      <li style="margin-top:8px"><strong>Fraud policy — strict action</strong>
-        <div style="color:#ffb3b3;margin-top:6px">
-          Uploading forged or manipulated payment screenshots is strictly prohibited. If the organisers detect a fake or tampered screenshot, the offender's submission will be rejected and the organising committee reserves the right to take strict action, including disqualification from the event and reporting to institutional authorities. Submit only genuine payment proofs.
-        </div>
-      </li>
-      <li style="margin-top:8px"><strong>Troubleshooting</strong>
-        <div style="color:var(--muted);margin-top:6px">
-          If the app doesn't allow selecting gallery images, scan the QR from another device or print the QR temporarily. Avoid in-app browsers; use Chrome or Safari.
-        </div>
-      </li>
-    </ol>
+    <div class="modal-body">
+      <div style="color:var(--muted);margin-bottom:12px">
+        Sparkle 3.0 connects batches, celebrates seniors, and warmly welcomes newcomers. Phase 2 registrations will be opening soon with limited availability. Keep an eye on upcoming announcements so you do not miss the moment. Until then, play the mini-game, share your score, and tag @sparkle.uvpce to get featured.
 
-    <div style="text-align:right;margin-top:20px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1)">
-      <button id="closeHow" class="btn primary" type="button" style="padding:10px 20px;font-size:15px">Understood</button>
+      <h3 style="color:#fff;margin-top:8px"><b>Catch the Sparkle</b></h3>
+      <div style="display:flex;gap:12px;align-items:center;margin:8px 0 14px 0">
+        <div><div class="countdown-value" id="gameScore">0</div><div style="font-size:12px;color:var(--muted)">SCORE</div></div>
+        <div><div class="countdown-value" id="gameTime">20s</div><div style="font-size:12px;color:var(--muted)">TIME LEFT</div></div>
+        <div><div class="countdown-value" id="gameBest">0</div><div style="font-size:12px;color:var(--muted)">BEST</div></div>
+      </div>
+
+      <div id="gameArea" class="game-area" tabindex="0" aria-label="Mini-game area"></div>
+
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+        <button id="startGame" class="btn primary">Start Game</button>
+        <button id="stopGame" class="btn ghost" disabled>Stop</button>
+        <button id="resetBest" class="btn ghost">Reset Best</button>
+        <button id="shareBtn" class="btn primary">Share Screenshot</button>
+      </div>
+
+      <hr style="border:0;border-top:1px solid rgba(255,255,255,0.04);margin:16px 0">
+
+      <h4 style="color:#fff;margin:0 0 8px 0">Rules</h4>
+      <ul style="color:var(--muted);line-height:1.6;margin-top:6px;margin-bottom:12px">
+        <li>Tap purple sparkles. Small = 1 point, big = 3 points.</li>
+        <li>Round length: 20 seconds.</li>
+        <li>Tag <strong>@sparkle.uvpce</strong> on Instagram to be featured — top scores may win passes (organiser verification required).</li>
+        <li>Play responsibly — do not use multiple devices to inflate scores. Organisers can verify winners and revoke unfair scores.</li>
+      </ul>
+
+      <h4 style="color:#fff;margin-top:12px">Support</h4>
+      <p style="color:var(--muted);line-height:1.5">If the game doesn't start on your device try reloading, or use a different browser. For issues DM @sparkle.uvpce on Instagram.</p>
+    </div>
+
+    <div class="modal-footer" aria-hidden="true">
+      <!-- optional footer actions - left empty intentionally -->
     </div>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
-/* ==================== CONFIG — edit capacities & amounts here ====================
-   Change `capacity` values to update seats; -1 means unlimited/remaining.
-============================================================================== */
-const CONFIG = {
-  phases: [
-    { key:'phase1', label:'Phase 1', amount:200, capacity:12},
-    { key:'phase2', label:'Phase 2', amount:250, capacity:181},
-    { key:'phase3', label:'Phase 3', amount:300, capacity:-1 }
-  ],
-  activePhaseIndex: 1,
-  qr: { img: '/assets/qr1.png', img2x: null, upiId: 'paytm.s206qns@pty' },
-  googleFormLink: 'https://forms.gle/sUVh4PZMpdyXnjDAA'
-};
-/* ================================================================================= */
+/* CONFIG */
+const TARGET_ISO = '2025-12-28T06:30:00+05:30';
+const GAME_DURATION = 20;
 
-/* ---------- DOM refs (shared) ---------- */
-const phasesEl = document.getElementById('phases');
-const selectedInfo = document.getElementById('selectedInfo');
-const seatsInfo = document.getElementById('seatsInfo');
-const qrImg = document.getElementById('qrImg');
-const upiIdEl = document.getElementById('upiId');
-const downloadBtn = document.getElementById('downloadBtn');
-const howBtn = document.getElementById('howBtn');
-const formBtn = document.getElementById('formBtn');
+/* helper */
+function safeAdd(el, ev, fn, opts){ if (el) el.addEventListener(ev, fn, opts); }
+
+/* DOM refs */
+const openEnvelopeBtn = document.getElementById('openEnvelopeBtn');
+const skipEnvelopeBtn = document.getElementById('skipEnvelopeBtn');
+const envelopeWrap = document.getElementById('envelopeWrap');
+const envelopeDot = document.getElementById('envelopeDot');
+const envFlap = document.getElementById('envFlap');
+const fullLetter = document.getElementById('fullLetter');
+const closeLetterBtn = document.getElementById('closeLetter');
+const letterCloseX = document.getElementById('letterCloseX');
+const joinWaitlistBtn = document.getElementById('joinWaitlist');
+const mainPanel = document.getElementById('mainPanel');
+
+const whyBtn = document.getElementById('whyBtn');
 const howModal = document.getElementById('howModal');
 const closeHow = document.getElementById('closeHow');
-const sweepRect = document.getElementById('sweepRect');
-const introLayer = document.getElementById('introLayer');
-const introCanvas = document.getElementById('introCanvas');
-const appWrap = document.getElementById('app');
+const gameArea = document.getElementById('gameArea');
+const startGameBtn = document.getElementById('startGame');
+const stopGameBtn = document.getElementById('stopGame');
+const resetBestBtn = document.getElementById('resetBest');
+const shareBtn = document.getElementById('shareBtn');
+const gameScoreEl = document.getElementById('gameScore');
+const gameTimeEl = document.getElementById('gameTime');
+const gameBestEl = document.getElementById('gameBest');
+const regBtn = document.getElementById('regBtn');
 
-/* ---------- Phase rendering & QR --------- */
-function renderPhases(){
-  phasesEl.innerHTML = '';
-  CONFIG.phases.forEach((p,i)=>{
-  const btn=document.createElement("button");
-  const isActive=(i===CONFIG.activePhaseIndex);
+/* tiny toast */
+function showToast(t){
+  const d = document.createElement('div');
+  d.textContent = t;
+  d.style.cssText = 'position:fixed;left:50%;bottom:12%;transform:translateX(-50%);background:#fff;color:#07101a;padding:8px 12px;border-radius:10px;z-index:9999;font-weight:700';
+  document.body.appendChild(d);
+  setTimeout(()=> d.remove(), 1600);
+}
 
-  btn.className="phase"+(isActive?" active":" locked");
-  btn.type="button";
-
-  btn.innerHTML = `
-    ${p.label}
-    <small>₹${p.amount}</small>
-  `;
-
-  if(!isActive){
-    btn.disabled=true;
-    btn.innerHTML+=`<span class="lock">🔒</span>`;
+/* envelope open/drop */
+function showEnvelopeDropAndOpen(){
+  if (!envelopeWrap || !envelopeDot){
+    if (fullLetter){ fullLetter.style.display = 'flex'; fullLetter.setAttribute('aria-hidden','false'); document.documentElement.style.overflow = 'hidden'; }
+    return;
   }
-
-  if(isActive){
-    btn.addEventListener("click",()=>{
-      CONFIG.activePhaseIndex=i;
-      updateSelected();
-      renderPhases();
-    })
-  }
-
-  phasesEl.appendChild(btn);
-});
-
-  updateSelected();
+  envelopeWrap.style.display = 'flex';
+  envelopeDot.classList.remove('enter');
+  void envelopeDot.offsetWidth;
+  envelopeDot.classList.add('enter');
+  setTimeout(()=> {
+    if (envFlap) envFlap.style.transform = 'rotateX(-180deg)';
+    setTimeout(()=> {
+      if (fullLetter){ fullLetter.style.display = 'flex'; fullLetter.setAttribute('aria-hidden','false'); document.documentElement.style.overflow = 'hidden'; }
+    }, 520);
+  }, 900);
 }
 
+/* envelope button handlers */
+safeAdd(openEnvelopeBtn, 'click', ()=> {
+  const popup = document.getElementById('envelopePopup');
+  if (popup) popup.style.display = 'none';
+  showEnvelopeDropAndOpen();
+}, { once:true, passive:true });
 
-function updateSelected(){
-  const p = CONFIG.phases[CONFIG.activePhaseIndex];
-  selectedInfo.textContent = `${p.label}: ₹${p.amount}`;
-  let seatsText;
-  if (p.capacity === -1) seatsText = 'Seats: Remaining / open';
-  else if (p.capacity === 0) seatsText = 'Seats: Full';
-  else seatsText = `Seats left: ${p.capacity}`;
-  seatsInfo.textContent = seatsText;
+safeAdd(skipEnvelopeBtn, 'click', ()=> {
+  const popup = document.getElementById('envelopePopup');
+  if (popup) popup.style.display = 'none';
+  const introLayer = document.getElementById('introLayer');
+  if (introLayer){ introLayer.style.transition = 'opacity .28s ease'; introLayer.style.opacity = '0'; setTimeout(()=> { introLayer.style.display='none'; }, 320); }
+  revealMain();
+}, { once:true, passive:true });
+
+/* close letter and reveal main UI */
+safeAdd(letterCloseX, 'click', closeLetterFlow, { passive:true });
+safeAdd(closeLetterBtn, 'click', closeLetterFlow, { passive:true });
+function closeLetterFlow(){
+  if (fullLetter){ fullLetter.style.display = 'none'; fullLetter.setAttribute('aria-hidden','true'); }
+  if (envelopeDot){ envelopeDot.style.transform = 'translateY(-220px) scale(.95) rotateX(6deg)'; envelopeDot.style.opacity = '0'; }
+  setTimeout(()=> { if (envelopeWrap) envelopeWrap.style.display = 'none'; document.documentElement.style.overflow = ''; const introLayer = document.getElementById('introLayer'); if (introLayer){ introLayer.style.opacity='0'; setTimeout(()=> introLayer.style.display='none', 360); } revealMain(); }, 420);
 }
 
-function renderQr(){
-  if (CONFIG.qr.img2x) qrImg.srcset = `${CONFIG.qr.img} 1x, ${CONFIG.qr.img2x} 2x`;
-  qrImg.src = CONFIG.qr.img;
-  upiIdEl.textContent = CONFIG.qr.upiId || '';
+/* waitlist button */
+safeAdd(joinWaitlistBtn, 'click', ()=> { try{ localStorage.setItem('sparkle_remind','1'); }catch(e){} showToast('We will remind you when registration opens. Follow @sparkle.uvpce for updates.'); }, { passive:true });
+
+/* reveal main */
+function revealMain(){ if (!mainPanel) return; mainPanel.style.opacity = '1'; mainPanel.style.transform = 'translateY(0)'; }
+
+/* open modal */
+safeAdd(whyBtn, 'click', ()=> {
+  if (!howModal) return;
+  howModal.classList.add('show'); howModal.setAttribute('aria-hidden','false');
+  document.documentElement.style.overflow='hidden';
+  // ensure modal body scroll starts at top
+  const body = howModal.querySelector('.modal-body');
+  if (body) body.scrollTop = 0;
+}, { passive:true });
+
+/* close modal */
+function closeModal(){
+  if (!howModal) return;
+  howModal.classList.remove('show'); howModal.setAttribute('aria-hidden','true');
+  document.documentElement.style.overflow='';
 }
+safeAdd(closeHow, 'click', closeModal, { passive:true });
 
-function downloadQrImage(){
-  const src = qrImg.src || CONFIG.qr.img;
-  if (!src) return alert('QR image not configured');
-  fetch(src, { mode: 'cors' }).then(resp => {
-    if (!resp.ok) throw new Error('Image fetch failed');
-    return resp.blob();
-  }).then(blob => {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `sparkle_qr_${CONFIG.phases[CONFIG.activePhaseIndex].label.replace(/\s+/g,'')}.png`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(a.href);
-  }).catch(()=> {
-    window.open(src, '_blank', 'noopener');
-    alert('Automatic download blocked — the QR image was opened in a new tab. Save it from there (long-press on mobile).');
-  });
-}
-
-function openGoogleForm(){
-  if (!CONFIG.googleFormLink) return alert('Google Form link not configured');
-  window.open(CONFIG.googleFormLink, '_blank', 'noopener');
-}
-
-/* How modal handlers */
-howBtn.addEventListener('click', ()=> howModal.classList.add('show'));
-closeHow.addEventListener('click', ()=> howModal.classList.remove('show'));
-howModal.addEventListener('click', (e)=> { if (e.target === howModal) howModal.classList.remove('show'); });
-
-downloadBtn.addEventListener('click', downloadQrImage);
-formBtn.addEventListener('click', openGoogleForm);
-
-/* --------- INTRO ANIMATION (canvas particles + sweep) --------- */
-let ctx = null;
-let DPR = Math.max(1, window.devicePixelRatio || 1);
-let particles = [];
-let running = true;
-let introVisible = true;
-let lastFrame = performance.now();
-let rafId = null;
-
-function resizeCanvas(){
-  DPR = Math.max(1, window.devicePixelRatio || 1);
-  const rect = introCanvas.getBoundingClientRect();
-  const w = Math.max(300, Math.floor(rect.width));
-  const h = Math.max(200, Math.floor(rect.height));
-  if (introCanvas.width !== Math.floor(w * DPR) || introCanvas.height !== Math.floor(h * DPR)) {
-    introCanvas.width = Math.floor(w * DPR);
-    introCanvas.height = Math.floor(h * DPR);
-  }
-  if (ctx) ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-}
-
-function initCanvas(){
-  ctx = introCanvas.getContext('2d', { alpha: true });
-  resizeCanvas();
-}
-
-function createParticles(){
-  particles = [];
-  const width = introCanvas.width / DPR;
-  let N = Math.max(10, Math.floor(width / 60));
-  if (DPR < 1.5) N = Math.max(8, Math.floor(N * 0.9));
-  if (/Mobi|Android/i.test(navigator.userAgent)) N = Math.min(N, 36);
-  for (let i=0;i<N;i++){
-    particles.push({
-      x: Math.random() * width,
-      y: introCanvas.height / DPR + Math.random() * 220,
-      vx: (Math.random() - 0.5) * 0.6,
-      vy: - (0.8 + Math.random() * 1.6),
-      r: 1 + Math.random() * 6,
-      life: 120 + Math.random() * 200,
-      hue: 240 + Math.random() * 90
-    });
-  }
-}
-
-function particleLoop(now){
-  if (!running || !introVisible) return;
-  const dt = Math.min(40, now - lastFrame);
-  lastFrame = now;
-  const width = introCanvas.width / DPR;
-  const height = introCanvas.height / DPR;
-  ctx.clearRect(0,0,width,height);
-
-  for (let i=0;i<particles.length;i++){
-    const p = particles[i];
-    p.x += p.vx * dt;
-    p.y += p.vy * dt;
-    p.life -= dt * 0.12;
-    if (p.life <= 0 || p.y < -80) {
-      p.x = Math.random() * width;
-      p.y = height + 10 + Math.random() * 120;
-      p.vx = (Math.random() - 0.5) * 0.6;
-      p.vy = - (0.8 + Math.random() * 1.6);
-      p.r = 1 + Math.random() * 6;
-      p.life = 120 + Math.random() * 200;
-      p.hue = 240 + Math.random() * 90;
+/* Prevent backdrop scrolling while allowing modal body scroll on touch devices */
+// inside your existing script where you init the modal:
+if (howModal) {
+  howModal.addEventListener('touchmove', function (e) {
+    if (!e.target.closest('.modal-card')) {
+      e.preventDefault(); // block background scroll
     }
-    const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 12);
-    g.addColorStop(0, `hsla(${p.hue},95%,70%,0.95)`);
-    g.addColorStop(0.25, `hsla(${p.hue},95%,70%,0.36)`);
-    g.addColorStop(1, `hsla(${p.hue},95%,70%,0)`);
-    ctx.fillStyle = g;
-    ctx.fillRect(Math.round(p.x - p.r * 6), Math.round(p.y - p.r * 6), p.r * 12, p.r * 12);
-  }
-}
-
-function animateSweep(duration = 3200, startX = -520, endX = 1320){
-  const start = performance.now();
-  function frame(now){
-    const t = Math.min(1, (now - start) / duration);
-    const eased = 1 - Math.pow(1 - t, 3);
-    const x = startX + (endX - startX) * eased;
-    if (sweepRect) sweepRect.setAttribute('x', String(x));
-    if (t < 1) requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
+    // if touch is inside modal-card, allow native scroll
+  }, { passive: false });
 }
 
 
-function runIntro(){
-  if (!ctx) initCanvas();
-  resizeCanvas();
-  createParticles();
-  animateSweep(3200, -520, 1320);
-  lastFrame = performance.now();
+/* COUNTDOWN */
+const daysEl = document.getElementById('days'), hoursEl = document.getElementById('hours'),
+      minutesEl = document.getElementById('minutes'), secondsEl = document.getElementById('seconds');
 
-  function loop(now){
-    if (!introVisible) return;
-    particleLoop(now);
-    rafId = requestAnimationFrame(loop);
+const targetTime = new Date(TARGET_ISO).getTime();
+const pad = n => String(n).padStart(2,'0');
+
+let lastValues = {d:null,h:null,m:null,s:null};
+function updateCountdown(){
+  const now = Date.now();
+  let diff = targetTime - now;
+  if (diff <= 0){
+    if (daysEl) daysEl.textContent = '00';
+    if (hoursEl) hoursEl.textContent = '00';
+    if (minutesEl) minutesEl.textContent = '00';
+    if (secondsEl) secondsEl.textContent = '00';
+    goLive();
+    return;
   }
-  rafId = requestAnimationFrame(loop);
+  const sec = Math.floor(diff/1000);
+  const d = Math.floor(sec/86400);
+  const h = Math.floor((sec%86400)/3600);
+  const m = Math.floor((sec%3600)/60);
+  const s = sec % 60;
+  if (daysEl && lastValues.d !== d){ daysEl.textContent = pad(d); lastValues.d = d; }
+  if (hoursEl && lastValues.h !== h){ hoursEl.textContent = pad(h); lastValues.h = h; }
+  if (minutesEl && lastValues.m !== m){ minutesEl.textContent = pad(m); lastValues.m = m; }
+  if (secondsEl && lastValues.s !== s){ secondsEl.textContent = pad(s); lastValues.s = s; }
+  requestAnimationFrame(updateCountdown);
+}
+requestAnimationFrame(updateCountdown);
 
-  const total = 3200 + 650;
-  setTimeout(() => {
-    introVisible = false;
-    if (rafId) cancelAnimationFrame(rafId);
-    ctx && ctx.clearRect(0,0,introCanvas.width,introCanvas.height);
-    introLayer.remove();
-    revealMain();
-  }, total);
-
+function goLive(){
+  if (!regBtn) return;
+  regBtn.disabled = false;
+  regBtn.textContent = 'Phase 2 Registration : Coming Soon';
+  regBtn.addEventListener('click', ()=> { window.open('#','_self'); }, { once:true });
 }
 
+/* BACKGROUND PARTICLES */
+const bgCanvas = document.createElement('canvas');
+bgCanvas.style.position = 'fixed';
+bgCanvas.style.left = '0';
+bgCanvas.style.top = '0';
+bgCanvas.style.right = '0';
+bgCanvas.style.bottom = '0';
+bgCanvas.style.zIndex = '-1';
+bgCanvas.style.pointerEvents = 'none';
+document.body.appendChild(bgCanvas);
+const bgCtx = bgCanvas.getContext('2d');
+let bgDPR = Math.max(1, window.devicePixelRatio || 1);
+let bgParticles = [];
+function resizeBG(){ const w=window.innerWidth, h=window.innerHeight; bgCanvas.width=Math.floor(w*bgDPR); bgCanvas.height=Math.floor(h*bgDPR); bgCanvas.style.width=w+'px'; bgCanvas.style.height=h+'px'; bgCtx.setTransform(bgDPR,0,0,bgDPR,0,0); }
+function initBG(){ resizeBG(); const W=window.innerWidth; const N = W < 480 ? 8 : Math.max(18, Math.floor(W/40)); bgParticles = new Array(N).fill(0).map(()=>({ x:Math.random()*window.innerWidth, y:Math.random()*window.innerHeight, vx:(Math.random()-0.5)*0.1, vy:(Math.random()-0.2)*0.02 - 0.01, r:1+Math.random()*5, hue:250+Math.random()*60, alpha:0.06+Math.random()*0.2 })); }
+let lastBG = performance.now(), bgRunning = true;
+function bgLoop(now){ if(!bgRunning){ lastBG = now; requestAnimationFrame(bgLoop); return; } const dt = Math.min(40, now - lastBG); lastBG = now; bgCtx.clearRect(0,0,window.innerWidth, window.innerHeight); for (let i=0;i<bgParticles.length;i++){ const p = bgParticles[i]; p.x += p.vx * dt; p.y += p.vy * dt; if (p.x < -20) p.x = window.innerWidth + 20; if (p.x > window.innerWidth + 20) p.x = -20; if (p.y < -40) p.y = window.innerHeight + 40; if (p.y > window.innerHeight + 40) p.y = -40; const g = bgCtx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*10); g.addColorStop(0, `hsla(${p.hue},85%,70%,${Math.min(1,p.alpha*2)})`); g.addColorStop(0.35, `hsla(${p.hue},85%,70%,${p.alpha})`); g.addColorStop(1, `hsla(${p.hue},85%,70%,0)`); bgCtx.fillStyle = g; bgCtx.fillRect(Math.round(p.x - p.r*6), Math.round(p.y - p.r*6), p.r*12, p.r*12); } requestAnimationFrame(bgLoop); }
+window.addEventListener('resize', ()=> { resizeBG(); initBG(); }, { passive:true }); document.addEventListener('visibilitychange', ()=> { bgRunning = !document.hidden; }); initBG(); requestAnimationFrame(bgLoop);
 
-function sparkleNav(id, btn){
+/* MINI-GAME (same tested logic) */
+let game = { running:false, score:0, best: Number(localStorage.getItem('sparkle_best') || 0), timeLeft: GAME_DURATION, raf:null, lastSpawn:0, spawnInterval:600 };
+if (gameBestEl) gameBestEl.textContent = game.best;
 
-  // switch content panels
-  document.querySelectorAll('.panel').forEach(p=>{
-    p.classList.remove('active');
-  });
+safeAdd(whyBtn, 'click', ()=> { if (!howModal) return; howModal.classList.add('show'); howModal.setAttribute('aria-hidden','false'); document.documentElement.style.overflow='hidden'; adaptGameArea(); }, { passive:true });
+safeAdd(closeHow, 'click', ()=> { if (!howModal) return; howModal.classList.remove('show'); howModal.setAttribute('aria-hidden','true'); document.documentElement.style.overflow=''; stopGame(true); }, { passive:true });
 
-  const target = document.getElementById(id);
-  if(target){
-    target.classList.add('active');
-  }
+function adaptGameArea(){ document.querySelectorAll('.sparkle').forEach(s=> s.remove()); }
+function spawnSparkle(big=false){ if (!gameArea) return; const el=document.createElement('div'); el.className='sparkle'; const size = big ? (window.innerWidth<520?56:72) : (window.innerWidth<520?48:56); const areaW=Math.max(160, gameArea.clientWidth - size - 8); const areaH=Math.max(120, gameArea.clientHeight - size - 8); const x=Math.floor(Math.random()*areaW)+4; const y=Math.floor(Math.random()*areaH)+4; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=size+'px'; el.style.height=size+'px'; el.dataset.value = big ? '3' : '1'; el.addEventListener('pointerdown', function onHit(e){ e.stopPropagation(); const v=Number(el.dataset.value||1); game.score += v; if (gameScoreEl) gameScoreEl.textContent = game.score; el.style.transition='transform 160ms ease, opacity 160ms ease'; el.style.transform='scale(1.6)'; el.style.opacity='0'; setTimeout(()=> el.remove(), 160); }, { once:true, passive:true }); gameArea.appendChild(el); setTimeout(()=> { if (el.isConnected) el.remove(); }, 1500 + Math.random()*900); }
 
-  // update tab highlight
-  document.querySelectorAll('.spark-tab').forEach(t=>{
-    t.classList.remove('active');
-  });
+function gameLoop(now){ if (!game.running){ game.raf=null; return; } if (!game.lastTS){ game.lastTS = now; game.lastSpawn = now; } game.lastTS = now; const targetInterval = Math.max(220, 700 - Math.min(500, game.score*12)); if (now - game.lastSpawn > targetInterval){ const count = Math.random() < 0.25 ? 2 : 1; for (let i=0;i<count;i++) spawnSparkle(Math.random() < 0.14); game.lastSpawn = now; } if (!game._tickT || now - game._tickT >= 1000){ game._tickT = now; game.timeLeft -= 1; if (gameTimeEl) gameTimeEl.textContent = game.timeLeft + 's'; if (game.timeLeft <= 0){ endGame(); return; } } game.raf = requestAnimationFrame(gameLoop); }
 
-  if(btn){
-    btn.classList.add('active');
-  }
+function startGame(){ if (game.running) return; game.running = true; game.score = 0; game.timeLeft = GAME_DURATION; if (gameScoreEl) gameScoreEl.textContent = '0'; if (gameTimeEl) gameTimeEl.textContent = GAME_DURATION + 's'; if (startGameBtn) startGameBtn.disabled = true; if (stopGameBtn) stopGameBtn.disabled = false; if (shareBtn) shareBtn.disabled = true; adaptGameArea(); spawnSparkle(); if (Math.random() > 0.6) spawnSparkle(true); game.lastTS = performance.now(); game.lastSpawn = performance.now(); game.raf = requestAnimationFrame(gameLoop); }
 
-  // always reset scroll
-  window.scrollTo({top:0, behavior:'smooth'});
-}
+function stopGame(clean=false){ game.running = false; if (game.raf) cancelAnimationFrame(game.raf); game.raf = null; if (startGameBtn) startGameBtn.disabled = false; if (stopGameBtn) stopGameBtn.disabled = true; if (shareBtn) shareBtn.disabled = false; document.querySelectorAll('.sparkle').forEach(s=> s.remove()); if (clean) { } }
 
+function endGame(){ stopGame(); if (game.score > game.best){ game.best = game.score; localStorage.setItem('sparkle_best', String(game.best)); if (gameBestEl) gameBestEl.textContent = game.best; showToast(`New personal best: ${game.best}`); } else { showToast(`Score: ${game.score}`); } }
 
-function showIntroTag(){
-  const t = document.getElementById('introTag');
-  if (!t) return;
-  t.style.opacity = '1';
-  t.style.transform = 'translateY(0)';
-}
+safeAdd(startGameBtn, 'click', startGame, { passive:true });
+safeAdd(stopGameBtn, 'click', ()=> stopGame(false), { passive:true });
+safeAdd(resetBestBtn, 'click', ()=> { const ok = confirm('Reset personal best on this device? This clears stored best locally.'); if (!ok) return; localStorage.removeItem('sparkle_best'); game.best = 0; if (gameBestEl) gameBestEl.textContent = game.best; alert('Personal best cleared on this device.'); }, { passive:true });
 
-function revealMain(){
-  appWrap.style.display="block";
-  appWrap.removeAttribute("aria-hidden");
+/* share helpers */
+async function createShareImage(score){ const w=900,h=560; const c=document.createElement('canvas'); const r=window.devicePixelRatio||1; c.width=w*r; c.height=h*r; c.style.width=w+'px'; c.style.height=h+'px'; const g=c.getContext('2d'); g.scale(r,r); const grad=g.createLinearGradient(0,0,w,h); grad.addColorStop(0,'#6b4bff'); grad.addColorStop(1,'#b084ff'); g.fillStyle=grad; g.fillRect(0,0,w,h); g.fillStyle='rgba(255,255,255,0.95)'; g.beginPath(); g.ellipse(120,110,72,72,0,0,Math.PI*2); g.fill(); g.fillStyle='#fff'; g.font='700 44px Inter, sans-serif'; g.fillText('SPARKLE 3.0',220,88); g.font='600 18px Inter, sans-serif'; g.fillText('Welcoming new beginnings,',220,118); g.fillText('Celebrating golden endings',220,144); g.fillStyle='rgba(0,0,0,0.18)'; g.fillRect(w-260,h-160,220,120); g.fillStyle='#fff'; g.font='900 56px Inter, sans-serif'; g.textAlign='center'; g.fillText(String(score),w-150,h-100); g.font='600 14px Inter, sans-serif'; g.fillText('Catch the Sparkle — Sparkle 3.0', w-150, h-70); g.textAlign='left'; g.font='500 12px Inter, sans-serif'; g.fillStyle='rgba(255,255,255,0.92)'; g.fillText('@sparkle.uvpce • Freshers × Farewell',24,h-18); return new Promise(res => c.toBlob(blob => res(blob), 'image/png', 0.92)); }
 
-  renderPhases();
-  renderQr();
-  updateSelected();
+async function shareScreenshot(){ const score = game.score || 0; if (score === 0){ alert('Play a round first — get a score to share!'); return; } try{ const blob = await createShareImage(score); if (!blob){ alert('Could not create share image. Please screenshot and tag @sparkle.uvpce.'); return; } const file = new File([blob], `sparkle_score_${score}.png`, { type:'image/png' }); if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files:[file], title:`Sparkle 3.0 — My Score ${score}`, text:`I scored ${score} in the Catch the Sparkle mini-game! Tag @sparkle.uvpce` }); alert('Share sheet opened — tag @sparkle.uvpce on Instagram to be featured.'); return; } if (navigator.share) { await navigator.share({ title:`Sparkle 3.0 — My Score ${score}`, text:`I scored ${score} in the Catch the Sparkle mini-game! Tag @sparkle.uvpce` }); alert('Shared. Tag @sparkle.uvpce on Instagram to be featured.'); return; } if (navigator.clipboard && navigator.clipboard.write) { try { const item = new ClipboardItem({ [blob.type]: blob }); await navigator.clipboard.write([item]); alert('Score image copied to clipboard. Paste into Instagram or your gallery and tag @sparkle.uvpce.'); return; } catch(e){} } try { await navigator.clipboard.writeText(`I scored ${score} in the Catch the Sparkle mini-game! Tag @sparkle.uvpce`); alert('Share text copied — take a screenshot and post tagging @sparkle.uvpce.'); } catch(e){ prompt('Copy and post on Instagram tagging @sparkle.uvpce:', `I scored ${score} in the Catch the Sparkle mini-game!`); } } catch (err){ console.error('Share failed', err); alert('Unable to generate a shareable image. Please take a screenshot and tag @sparkle.uvpce on Instagram.'); } }
 
-  requestAnimationFrame(()=>{
-    appWrap.style.opacity="1";
-    appWrap.style.transform="translateY(0)";
-  });
+safeAdd(shareBtn, 'click', shareScreenshot, { passive:true });
 
-  // ⭐ show Astra widget shell (hidden until opened)
-  const astra = document.getElementById("astraWidget");
-  if(astra){
-    astra.style.display = "block";
-  }
+/* accessibility niceties */
+document.addEventListener('visibilitychange', ()=> { bgRunning = !document.hidden; if (bgRunning) requestAnimationFrame(bgLoop); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape'){ if (howModal && howModal.classList.contains('show')){ howModal.classList.remove('show'); document.documentElement.style.overflow=''; stopGame(true); } } });
 
-  // ⭐ show launcher button now
-  const launcher = document.getElementById("astraLauncher");
-  if(launcher){
-    launcher.style.display = "flex";
-  }
-
-  // ⭐ popup welcome peek
-  showPeek();
-  introLayer.remove();
-}
-
-
-/* ---------- background parallax (mouse + touch) ---------- */
-(function backgroundParallax(){
-  const bg = document.getElementById('themeBg');
-  if (!bg) return;
-  let lastX = 0, lastY = 0;
-  let tick = null;
-  function updateTransform(x, y){
-    lastX += (x - lastX) * 0.06;
-    lastY += (y - lastY) * 0.06;
-    bg.style.transform = `translate3d(${lastX}px, ${lastY}px, 0) scale(1.02)`;
-  }
-  function onMove(e){
-    const w = window.innerWidth, h = window.innerHeight;
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    const x = (clientX / w - 0.5) * 22;
-    const y = (clientY / h - 0.5) * 12;
-    if (tick === null) {
-      tick = requestAnimationFrame(()=> { updateTransform(x,y); tick = null; });
-    }
-  }
-  window.addEventListener('mousemove', onMove, { passive: true });
-  window.addEventListener('touchmove', onMove, { passive: true });
-})();
-
-/* ---------- visibility & resize handling ---------- */
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) {
-    running = false; 
-    if (rafId) cancelAnimationFrame(rafId);
-  } else {
-    running = true;
-    if (introVisible) { 
-      lastFrame = performance.now(); 
-      rafId = requestAnimationFrame(function resume(now) { 
-        particleLoop(now); 
-        rafId = requestAnimationFrame(resume); 
-      }); 
-    }
-  }
+/* initial */
+document.addEventListener('DOMContentLoaded', ()=> {
+  if (mainPanel){ mainPanel.style.opacity='0'; mainPanel.style.transform='translateY(8px)'; }
 });
-
-let resizeTimer = null;
-function onResize(){
-  resizeCanvas();
-  if (introVisible) createParticles();
-  if (resizeTimer) clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(() => { 
-    resizeCanvas(); 
-    if (introVisible) createParticles(); 
-  }, 120);
-}
-window.addEventListener('resize', onResize, { passive: true });
-
-// Initialize the page when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', function() {
-  // Start the intro animation
-  runIntro();
-  
-  // Show the intro tag after a short delay
-  setTimeout(showIntroTag, 800);
-});
-function calcMemory(){
-
-  let score = 50;
-
-  const year = document.getElementById('mpYear').value;
-  const group = document.getElementById('mpGroup').value;
-  const freq = document.getElementById('mpFreq').value;
-  const emo  = document.getElementById('mpEmotion').value;
-  const time = document.getElementById('mpTime').value;
-
-  // Year weighting
-  if(year === "Final Year") score += 30;
-  else if(year === "3rd Year") score += 18;
-  else if(year === "2nd Year") score += 10;
-  else score += 4;
-
-  // Group influence
-  if(group === "Large Group (7+)") score += 20;
-  else if(group === "4–6 Friends") score += 14;
-  else if(group === "2–3 Friends") score += 9;
-  else score += 3;
-
-  // Meeting frequency
-  if(freq === "Rarely") score += 10;
-  if(freq === "Hardly ever") score += 16;
-
-  // Emotion
-  if(emo === "Very High") score += 20;
-  else if(emo === "Moderate") score += 12;
-  else if(emo === "Unsure") score += 2;
-  else score -= 12;
-
-  // Time remaining
-  if(time === "Last Phase") score += 16;
-  if(time === "Almost There") score += 10;
-
-  // Normalise
-  if(score > 100) score = 100;
-  if(score < 25) score = 25;
-
-  // ---------- INTELLIGENT CONTEXT ----------
-  let personaNote = "";
-
-  if(year === "Final Year"){
-    personaNote += "Final year brain + emotions == volatile memory storage. This night will stay. ";
-  }
-  else if(year === "1st Year"){
-    personaNote += "First year + first big event = permanent install in long-term memory. ";
-  }
-
-  if(group === "Solo"){
-    personaNote += "Going solo? Respect. Lone-wolf mode usually creates cinematic memories. ";
-  }
-  else if(group.includes("Large")){
-    personaNote += "Big squad energy detected. Memories multiply exponentially. ";
-  }
-
-  if(freq === "Hardly ever"){
-    personaNote += "You barely meet these people which means this night becomes 10x more special. ";
-  }
-
-  if(emo === "Low"){
-    personaNote += "Right now you may feel detached but nights like this sneak into memory quietly. ";
-  }
-
-  if(time === "Last Phase"){
-    personaNote += "End-game arc unlocked. Nostalgia probability boosted. ";
-  }
-
-  // ---------- TONE ----------
-  let tone =
-    (score >= 90) ? 
-      "High chance this becomes a ‘core-memory’. Even after graduating, this night will randomly play in your head for no reason." :
-    (score >= 80) ?
-      "Very strong chance this becomes one of those golden university moments you mention in reunions." :
-    (score >= 65) ?
-      "Likely to become one of the nicer memories from your college timeline — soft, warm, peaceful." :
-    (score >= 50) ?
-      "This may become a light, background memory. Nice to think about, occasionally resurfacing when songs play." :
-      "Memory strength depends on how open you are that evening. If you loosen up, the score improves instantly.";
-
-  // ---------- SPICE / ATTITUDE ----------
-  let attitude =
-    (score >= 85) ?
-      "Engineers call this ‘High Recall Persistence’. Non-engineers simply call it unforgettable." :
-    (score >= 70) ?
-      "Statistically, this night is going to age beautifully in your memory." :
-      "Warning: overthinking reduces memory happiness index. Just show up and vibe.";
-
-  // ---------- BUILD UI ----------
-  const box = document.getElementById('mpResult');
-
-  box.style.display = "block";
-  box.style.visibility = "visible";
-  box.style.opacity = "1";
-  box.style.maxHeight = "none";
-
-  box.innerHTML = `
-    <div class="spark-card">
-
-      <div style="font-size:20px;font-weight:800">
-        S.P.A.R.K. Memory Index™:
-        <span id="scoreNum">${score}%</span>
-      </div>
-
-      <div class="spark-meter">
-        <div class="spark-meter-fill" style="width:${score}%"></div>
-      </div>
-
-      <div style="margin-top:12px;color:#cfd4ff">
-        ${tone}
-      </div>
-
-      <div style="margin-top:10px;color:#9fb4ff">
-        ${personaNote}
-      </div>
-
-      <div style="margin-top:10px;font-weight:700;color:#ffd56b">
-        ${attitude}
-      </div>
-
-      <div style="margin-top:10px;font-size:12px;color:#9ea7ff">
-        <strong>S.P.A.R.K.</strong> = Spark Probability & Recall Knowledge Index
-      </div>
-
-    </div>
-  `;
-
-  box.scrollIntoView({ behavior:"smooth", block:"center" });
-}
-
-document.addEventListener("DOMContentLoaded", function(){
-
-  const genBtn = document.getElementById("generateIndexBtn");
-
-  if(genBtn){
-    genBtn.addEventListener("click", function(e){
-      e.preventDefault();
-      e.stopPropagation();
-      calcMemory();
-    });
-  }
-
-});
-
-// =====================
-// SEQUENTIAL ENGINE
-// =====================
-
-const steps = [
-  "mpYear",
-  "mpGroup",
-  "mpFreq",
-  "mpEmotion",
-  "mpTime"
-];
-
-const genBtn = document.getElementById("generateIndexBtn");
-
-// 1️⃣ Reset & lock all except first
-function initSequential(){
-  steps.forEach((id,i)=>{
-    const el = document.getElementById(id);
-    el.selectedIndex = -1;          // blank option
-    el.disabled = (i!==0);          // only first enabled
-  });
-
-  genBtn.disabled = true;           // disable button
-}
-
-initSequential();
-
-// 2️⃣ Each selection unlocks the next & locks itself
-steps.forEach((id,i)=>{
-
-  const el = document.getElementById(id);
-
-  el.addEventListener("change",()=>{
-
-    el.disabled = true;             // lock current
-
-    const next = steps[i+1];        // find next
-    if(next){
-      document.getElementById(next).disabled = false;
-      document.getElementById(next).focus();
-    }
-
-    if(i === steps.length-1){       // last completed
-      genBtn.disabled = false;      // enable button
-    }
-  });
-
-});
-
 </script>
-<!-- SPARK COMPANION — ASTRA -->
-<div id="astraWidget">
-  <div id="astraHeader">Astra (Sparkle 3.0 Companion)<span id="astraClose" style="float:right;cursor:pointer">×</span></div>
-  <div id="astraChat"></div>
-  <div id="astraPrompts">
-    <button>How do I pay?</button>
-    <button>Where is the event?</button>
-    <button>I feel nervous going alone</button>
-  </div>
-
-
-  <div id="astraInputBox">
-    <input id="astraInput" placeholder="Type your message..." />
-    <button id="astraSend">Send</button>
-  </div>
-</div>
-
-<div id="astraLauncher">
-  ✨
-</div>
-
-<div id="astraPeek">
-  Hi, I’m Astra. Here if you need me.
-</div>
-
-<style>
-#astraWidget{
-  position:fixed;
-  bottom:82px;
-  right:18px;
-  width:320px;
-  max-width:92vw;
-  max-height:70vh;
-  border-radius:16px;
-  background:rgba(11,10,20,.9);
-  border:1px solid rgba(255,255,255,.12);
-  box-shadow:0 28px 80px rgba(0,0,0,.6);
-  font-family:Inter,system-ui;
-  color:#fff;
-  overflow:hidden;
-  backdrop-filter:blur(12px);
-  z-index:99999;
-  display:none;
-  opacity:0;
-  transform:translateY(8px);
-  transition:.25s ease;
-  pointer-events:none;
-}
-
-/* when visible */
-#astraWidget.open{
-  display:block;
-  opacity:1;
-  transform:translateY(0);
-  pointer-events:auto;
-}
-
-#astraHeader{
-  padding:12px 14px;
-  font-weight:800;
-  background:linear-gradient(90deg,#9b6bff,#6da6ff);
-  color:#07101a;
-  text-align:center;
-}
-
-#astraChat{
-  height:280px;
-  max-height:48vh;
-  padding:14px;
-  overflow-y:auto;
-  font-size:14px;
-  -webkit-overflow-scrolling:touch;
-}
-
-.msg{
-  margin-bottom:10px;
-  line-height:1.5;
-}
-
-.user{
-  text-align:right;
-  color:#bcd3ff;
-}
-
-.bot{
-  color:#fff;
-}
-
-#astraInputBox{
-  display:flex;
-  border-top:1px solid rgba(255,255,255,.12);
-}
-
-#astraInput{
-  flex:1;
-  padding:10px;
-  background:transparent;
-  border:none;
-  color:#fff;
-  outline:none;
-}
-
-#astraPrompts{
-  padding:10px;
-  display:flex;
-  gap:6px;
-  flex-wrap:wrap;
-}
-
-#astraPrompts button{
-  background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.18);
-  padding:6px 10px;
-  border-radius:10px;
-  color:#fff;
-  cursor:pointer;
-  font-size:12px;
-}
-
-#astraSend{
-  background:linear-gradient(90deg,#6da6ff,#9b6bff);
-  border:none;
-  color:#07101a;
-  padding:10px 16px;
-  cursor:pointer;
-  font-weight:800;
-}
-#astraPeek{
-  position:fixed;
-  bottom:92px;                 /* sits above launcher */
-  right:18px;
-  transform:translateX(50%);   /* anchor to right edge */
-  background:rgba(11,10,20,.92);
-  border:1px solid rgba(255,255,255,.14);
-  border-radius:14px;
-  padding:12px 14px;
-  max-width:240px;
-  font-size:14px;
-  line-height:1.45;
-  box-shadow:0 18px 48px rgba(0,0,0,.55);
-  backdrop-filter:blur(10px);
-  z-index:99999;
-  opacity:0;
-  pointer-events:none;
-  transition:.15s ease;
-  pointer-events:none;
-}
-
-/* show state */
-#astraPeek.show{
-  opacity:1;
-  transform:translateY(0);
-  pointer-events:auto;
-}
-
-@media(max-width:680px){
-  #astraPeek{
-    right:18px;
-    left:auto;
-    bottom:92px;
-    transform:translateX(50%);
-    max-width:220px;
-  }
-}
-
-#astraLauncher{
-  position:fixed;
-  bottom:18px;
-  right:18px;
-  width:56px;
-  height:56px;
-  border-radius:50%;
-  background:linear-gradient(90deg,#9b6bff,#6da6ff);
-  box-shadow:0 18px 48px rgba(0,0,0,.55);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:24px;
-  cursor:pointer;
-  z-index:99999;
-  display:none;
-  pointer-events:auto;
-}
-
-@media(max-width:680px){
-  #astraWidget{
-    right:10px;
-    left:10px;
-    bottom:76px;
-    width:auto;
-  }
-}
-
-  #astraChat{
-    height:240px;
-  }
-  
-</style>
-
-<script>
-// =====================================
-//   SPARK COMPANION — ASTRA ENGINE
-//   No APIs. No LLMs. Pure logic.
-// =====================================
-
-const chat = document.getElementById("astraChat");
-const input = document.getElementById("astraInput");
-const send = document.getElementById("astraSend");
-
-let persona = {
-  name:"Astra",
-  mood:"warm",
-  userName:null,
-  year:null,
-  visits: Number(localStorage.getItem("sparkVisits")||0)+1
-};
-
-localStorage.setItem("sparkVisits", persona.visits);
-
-// ------- UTIL --------
-function addMsg(text, who="bot"){
-  const div = document.createElement("div");
-  div.className = "msg "+who;
-  div.innerText = text;
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
-}
-
-document.querySelectorAll("#astraPrompts button").forEach(btn=>{
-  btn.onclick = ()=>{
-    const text = btn.innerText;
-    addMsg(text,"user");
-    setTimeout(()=> addMsg(reply(text),"bot"),300);
-  };
-});
-
-function detectIntent(msg){
-
-  msg = msg.toLowerCase();
-
-  if(/\b(hi|hello|hey|hola|yo|sup)\b/.test(msg))
-    return "greet";
-
-  if(msg.includes("pay") || msg.includes("payment") || msg.includes("upi") || msg.includes("fees"))
-    return "payment";
-
-  if(msg.includes("venue") || msg.includes("where") || msg.includes("location") || msg.includes("oat"))
-    return "venue";
-
-  if(msg.includes("time") || msg.includes("timing") || msg.includes("clock") || msg.includes("when does it"))
-    return "timing";
-
-  if(msg.includes("dress") || msg.includes("code") || msg.includes("clothes") || msg.includes("wear"))
-    return "dress";
-
-  if(msg.includes("pass") || msg.includes("passes") || msg.includes("distribution"))
-    return "passes";
-
-  if(msg.includes("date") || msg.includes("30") || msg.includes("jan"))
-    return "date";
-
-  if(msg.includes("help") || msg.includes("confused") || msg.includes("doubt") || msg.includes("problem"))
-    return "help";
-
-  if(msg.includes("bye") || msg.includes("goodnight") || msg.includes("see you"))
-    return "bye";
-
-  if(msg.includes("friend") || msg.includes("people") || msg.includes("fun") || msg.includes("enjoy"))
-    return "social";
-
-  return "unknown";
-}
-
-// ------- EMOTION ENGINE -------
-function detectEmotion(msg){
-  msg = msg.toLowerCase();
-  if(msg.includes("nervous")||msg.includes("scared")||msg.includes("anxious")) return "reassure";
-  if(msg.includes("excited")||msg.includes("happy")) return "excited";
-  if(msg.includes("sad")) return "soft";
-  return "neutral";
-}
-
-function detectYear(msg){
-
-  const m = msg.toLowerCase();
-
-  if(m.includes("1st") || m.includes("first") || m.includes("fresh") || m.includes("fresher")){
-    persona.year = "1st Year";
-    return "Got it, so you’re in your 1st year. Welcome to the beginning of everything 🙂";
-  }
-
-  if(m.includes("2nd") || m.includes("second")){
-    persona.year = "2nd Year";
-    return "Nice, so in 2nd year usually feels more confident and free.";
-  }
-
-  if(m.includes("3rd") || m.includes("third")){
-    persona.year = "3rd Year";
-    return "3rd year energy says that experienced but still playful. I like it.";
-  }
-
-  if(m.includes("final") || m.includes("last")){
-    persona.year = "Final Year";
-    return "Final year hits differently. This night may mean more than you realise.";
-  }
-
-  return null;
-}
-
-// ------- SEND HANDLER -------
-send.onclick = ()=>{
-  const msg = input.value.trim();
-  if(!msg) return;
-
-  addMsg(msg,"user");
-  input.value="";
-
-  setTimeout(()=>{
-    addMsg("Astra is typing...","bot");
-  },200);
-
-  setTimeout(()=>{
-    chat.lastChild.remove();
-    addMsg(reply(msg),"bot");
-  },900);
-};
-
-function reply(msg){
-
-  const e = detectEmotion(msg);
-  const intent = detectIntent(msg);
-  const text = msg.trim();
-
-  // -------- NAME CAPTURE --------
-  if(!persona.userName && text.length <= 20 && text.split(" ").length <= 3){
-    persona.userName = text;
-    return `Nice to meet you, ${persona.userName}. I’m Astra, your Sparkle 3.0 Companion.`;
-  }
-
-  // -------- YEAR CAPTURE --------
-  const yearReply = detectYear(text);
-  if(yearReply) return yearReply;
-
-  // -------- INTENT LOGIC --------
-  switch(intent){
-
-    case "greet":
-      return "Hello 👋, I’m Astra. Ask me anything about Sparkle 3.0. Engineering brain or not, I’ll answer 😄";
-
-    case "payment":
-      return "Payment is simple:\n\n1️⃣ Download QR\n2️⃣ Pay via any UPI app\n3️⃣ Upload screenshot in the Google Form\n\nIf needed, I can guide you slowly like your favourite lab assistant 🙂";
-
-    case "venue":
-      return "📍 The venue is Open Air Theatre (OAT), Ganpat University.\n\nYes, the legendary OAT where emotions echo better than speakers 😄";
-
-    case "timing":
-      return "⏰ Event timing:\n5:00 PM to 9:00 PM\n\nCome on time, engineers are rarely early, so be the exception.";
-
-    case "dress":
-      return "👗 Dress-code:\nRuko Zara Sabar Karo\n\nHero, villain, side-character yaha sab chalta hai. Just don’t come as Error 404: Outfit Not Found 😉";
-
-    case "passes":
-      return "🎟️ Pass distribution might starts after 19 January 2026.\n\nSo chill,no FOMO till then 😌";
-
-    case "date":
-      return "📅 Event Date:\n30 January 2026\n\nMark calendar. Set reminder. Tell friends. Cancel boring plans.";
-
-    case "help":
-      return "Just type normally, I understand engineering English, Gujarati English, and even broken exam-week English 🙂";
-
-    case "social":
-      return "Many students come with friends and many come alone. But everyone leaves with memories. Matlab sabka placement yahan pakka 😄";
-
-    case "bye":
-      return "Okay 🙂 I’ll be here when you return. Like a background app consuming zero battery 💫";
-  }
-
-  // -------- EMOTION RESPONSES --------
-  if(e === "reassure")
-    return "It’s okay to feel that way. First year, last year, coder, mech; everyone fits here 🙂";
-
-  if(e === "excited")
-    return "I love that energy ⚡ Nights like this usually become core-memory material.";
-
-  if(e === "soft")
-    return "Thank you for sharing. You’re not alone and I’m right here with you.";
-
-  // -------- FUN UNKNOWN RESPONSE (Gujarati-friendly humour) --------
-  return "I am honestly confused what you are trying to say 😄\n\nEngineer ho na? Kabhi kabhi keyboard bhi emotional ho jaata hoga.Try asking again in simple way. I’ll reply properly 👍";
-}
-
-// ------- GREET ON LOAD -------
-setTimeout(()=>{
-  if(persona.visits>1)
-    addMsg("Welcome back. I’m glad you returned.");
-  else
-    addMsg("Hi,I’m Astra. I’m here to make Sparkle feel a little more human.");
-
-},700);
-
-const launcher = document.getElementById("astraLauncher");
-const widget = document.getElementById("astraWidget");
-const closeBtn = document.getElementById("astraClose");
-
-launcher.onclick = ()=>{
-  widget.classList.add("open");
-};
-
-closeBtn.onclick = ()=>{
-  widget.classList.remove("open");
-};
-
-const peek = document.getElementById("astraPeek");
-
-function showPeek(){
-  if(!peek) return;
-  peek.classList.add("show");
-
-  // auto hide after 5 seconds
-  setTimeout(()=>{
-    peek.classList.remove("show");
-  },1500);
-}
-
-// If user clicks popup → open chat
-peek.onclick = ()=>{
-  widget.classList.add("open");
-  peek.classList.remove("show");
-};
-
-</script>
-
 </body>
 </html>
-
