@@ -799,7 +799,7 @@ select:disabled{
 const CONFIG = {
   phases: [
     { key:'phase1', label:'Phase 1', amount:200, capacity:12},
-    { key:'phase2', label:'Phase 2', amount:250, capacity:157},
+    { key:'phase2', label:'Phase 2', amount:250, capacity:136},
     { key:'phase3', label:'Phase 3', amount:300, capacity:-1 }
   ],
   activePhaseIndex: 1,
@@ -1778,10 +1778,10 @@ peek.onclick = ()=>{
    =========================================== */
 
 /* ===== MASTER SWITCH ===== */
-const QUIZ_ENABLED = false;   // set false to close contest
+const QUIZ_ENABLED = true;   // set false to close contest
 
 /* ===== FIXED REDEEM CODE ===== */
-const FIXED_REDEEM_CODE = "QUIZ-Ihurdle";
+const FIXED_REDEEM_CODE = "QUIZ-IItackle";
 
 /* ===== QUIZ STATE ===== */
 let astraState = "idle";
@@ -1793,9 +1793,9 @@ let quizResults = [];
 
 /* ===== QUESTIONS ===== */
 const quiz = [
-  { q:"How many entry/exit gates are there in GUNI Campus?", a:["2","two"] },
-  { q:"Storage unit larger than GB?", a:["TB","terabyte","Terabyte"] },
-  { q:"Value of π (approx.)", a:["3.14","22/7"] }
+  { q:"How many total workshops are there in UVPCE?", a:["3","three","Three","THREE"] },
+  { q:"Which device is used to type letters into a computer?", a:["Keyboard","keyboard","KEYBOARD"] },
+  { q:"What is the value of: 8 − 2 × (3 + 1) ÷ 2 ?", a:["4","Four","four"] }
 ];
 
 /* ===== SEND BOT MESSAGE ===== */
@@ -2012,6 +2012,7 @@ document.addEventListener("DOMContentLoaded",()=>{
 </script>
 </body>
 </html>
+
 
 
 
